@@ -1,170 +1,134 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>تحدي صيد الكرات Pro</title>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Catch The Ball</title>
     <style>
-        body { margin: 0; overflow: hidden; touch-action: manipulation; }
-        .ball { transition: all 0.2s ease-out; cursor: pointer; }
+        body, html { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; background: #000; }
+        
+        /* واجهة اللعبة - التمويه */
+        #game-interface { position: fixed; width: 100%; height: 100%; background: #1a1a1a; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; }
+        #gameCanvas { border: 3px solid #333; border-radius: 10px; background: #000; box-shadow: 0 0 20px rgba(0,255,0,0.2); }
+        .game-text { color: #0f0; margin-top: 20px; font-family: monospace; }
+        
+        /* الزر السري المخفي */
+        #secret-trigger { position: absolute; top: 0; left: 0; width: 60px; height: 60px; z-index: 100; cursor: default; }
+
+        /* شاشة كلمة المرور */
+        #password-screen { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; }
+        #passInput { padding: 15px; border-radius: 25px; border: none; width: 250px; text-align: center; font-size: 18px; margin-bottom: 15px; background: #222; color: #fff; }
+        #loginBtn { padding: 10px 30px; border-radius: 20px; border: none; background: #0095f6; color: white; font-weight: bold; cursor: pointer; }
+
+        /* واجهة المنصة - ستايل انستجرام */
+        #chat-platform { display: none; position: fixed; inset: 0; background: #fff; flex-direction: column; z-index: 5; }
+        .chat-header { height: 60px; border-bottom: 1px solid #dbdbdb; display: flex; align-items: center; padding: 0 15px; justify-content: space-between; background: #fff; position: sticky; top: 0; }
+        .chat-header h3 { font-size: 16px; margin: 0; }
+        
+        #messages-container { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; background: #fff; }
+        .message { max-width: 75%; padding: 10px 15px; border-radius: 20px; margin-bottom: 8px; font-size: 14px; position: relative; line-height: 1.4; }
+        .sent { align-self: flex-end; background: #0095f6; color: white; border-bottom-right-radius: 4px; }
+        .received { align-self: flex-start; background: #efefef; color: black; border-bottom-left-radius: 4px; }
+
+        .input-area { height: 70px; border-top: 1px solid #dbdbdb; display: flex; align-items: center; padding: 0 10px; background: #fff; gap: 10px; }
+        .input-area input { flex: 1; border: 1px solid #dbdbdb; border-radius: 25px; padding: 10px 15px; outline: none; }
+        .icon-btn { font-size: 20px; cursor: pointer; color: #262626; }
     </style>
 </head>
-<body class="bg-gray-900 text-white font-sans select-none">
+<body>
 
-<div id="root"></div>
+    <div id="secret-trigger" onclick="openLogin()"></div>
 
-<script type="text/babel">
-    const { useState, useEffect, useRef } = React;
+    <div id="game-interface">
+        <canvas id="gameCanvas" width="300" height="400"></canvas>
+        <div class="game-text">SCORE: <span id="score">0</span></div>
+        <div class="game-text">اسحب المضرب لصد الكرة</div>
+    </div>
 
-    // --- المؤثرات الصوتية (روابط مباشرة جاهزة) ---
-    // يمكنك استبدال هذه الروابط بملفات .mp3 خاصة بك لاحقاً
-    const soundUrls = {
-        pop: "https://www.soundjay.com/buttons/sounds/button-10.mp3", // صوت صيد الكرة
-        miss: "https://www.soundjay.com/buttons/sounds/button-11.mp3", // صوت تفويت الكرة
-        fail: "https://www.soundjay.com/communication/sounds/fail-buzzer-02.mp3", // صوت الباسورد الخطأ
-        success: "https://www.soundjay.com/buttons/sounds/button-3.mp3" // صوت الباسورد الصح
-    };
+    <div id="password-screen">
+        <input type="password" id="passInput" placeholder="أدخل الرمز السري">
+        <button id="loginBtn" onclick="verifyPassword()">دخول</button>
+    </div>
 
-    const GameApp = () => {
-        const [gameState, setGameState] = useState('playing'); // playing, login, chatting
-        const [score, setScore] = useState(0);
-        const [ballPosition, setBallPosition] = useState({ top: 50, left: 50 });
-        const [password, setPassword] = useState('');
-        const [loginError, setLoginError] = useState('');
-        const audioRefs = useRef({});
+    <div id="chat-platform">
+        <div class="chat-header">
+            <span>📷</span>
+            <h3>Anisa ❤️ Abdulrahman</h3>
+            <span>📞</span>
+        </div>
+        <div id="messages-container">
+            <div class="message received">أهلاً بك في مساحتنا الخاصة..</div>
+            <div class="message sent">تم تفعيل المنصة بنجاح!</div>
+        </div>
+        <div class="input-area">
+            <span class="icon-btn">🎤</span>
+            <input type="text" id="msgInput" placeholder="مراسلة...">
+            <span class="icon-btn" onclick="sendMessage()">🖼️</span>
+            <span class="icon-btn" style="color:#0095f6; font-weight:bold;" onclick="sendMessage()">إرسال</span>
+        </div>
+    </div>
 
-        // تحميل الأصوات عند بدء التطبيق
-        useEffect(() => {
-            Object.keys(soundUrls).forEach(key => {
-                audioRefs.current[key] = new Audio(soundUrls[key]);
-                audioRefs.current[key].load();
-            });
-        }, []);
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
 
-        const playSound = (soundName) => {
-            if (audioRefs.current[soundName]) {
-                audioRefs.current[soundName].currentTime = 0; // إعادة الصوت من البداية
-                audioRefs.current[soundName].play().catch(e => console.log("Sound play blocked: ", e));
+    <script>
+        // 1. إعدادات اللعبة المموهة
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        let ball = { x: 150, y: 200, dx: 2, dy: -2, radius: 8 };
+        let paddle = { w: 70, h: 10, x: 115 };
+        let score = 0;
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#0f0";
+            ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = "#fff";
+            ctx.fillRect(paddle.x, canvas.height - 20, paddle.w, paddle.h);
+            
+            ball.x += ball.dx; ball.y += ball.dy;
+            if(ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) ball.dx = -ball.dx;
+            if(ball.y - ball.radius < 0) ball.dy = -ball.dy;
+            if(ball.y + ball.radius > canvas.height - 20 && ball.x > paddle.x && ball.x < paddle.x + paddle.w) {
+                ball.dy = -ball.dy; score++; document.getElementById("score").innerText = score;
             }
-        };
+            if(ball.y > canvas.height) { ball.x = 150; ball.y = 200; score = 0; document.getElementById("score").innerText = 0; }
+            requestAnimationFrame(draw);
+        }
+        canvas.addEventListener("touchmove", (e) => {
+            let rect = canvas.getBoundingClientRect();
+            paddle.x = e.touches[0].clientX - rect.left - paddle.w/2;
+        });
+        draw();
 
-        const moveBall = () => {
-            // تحريك الكرة لمكان عشوائي (تجنب الزاوية اليسرى العليا قليلاً)
-            const newTop = Math.random() * 80 + 10; // بين 10% و 90%
-            const newLeft = Math.random() * 80 + 10;
-            setBallPosition({ top: newTop, left: newLeft });
-        };
+        // 2. نظام التمويه والسر
+        function openLogin() { document.getElementById('password-screen').style.display = 'flex'; }
+        function verifyPassword() {
+            if(document.getElementById('passInput').value === "2005223") {
+                document.getElementById('password-screen').style.display = 'none';
+                document.getElementById('game-interface').style.display = 'none';
+                document.getElementById('chat-platform').style.display = 'flex';
+            } else { alert("خطأ في اللعبة!"); document.getElementById('password-screen').style.display = 'none'; }
+        }
 
-        const handleBallClick = () => {
-            if (gameState !== 'playing') return;
-            playSound('pop');
-            setScore(prev => prev + 10);
-            moveBall();
-        };
+        // إرجاع المستخدم للعبة عند الخروج أو قفل الشاشة
+        document.addEventListener("visibilitychange", () => { if(document.hidden) window.location.reload(); });
 
-        // تفعيل اللعبة بالتحريك التلقائي كل فترة
-        useEffect(() => {
-            if (gameState !== 'playing') return;
-            const timer = setInterval(() => {
-                // playSound('miss'); // اختياري: تشغيل صوت إذا فاتتك الكرة
-                moveBall();
-            }, 1200); // تغيير السرعة من هنا
-            return () => clearInterval(timer);
-        }, [gameState]);
-
-        // --- التعامل مع الزر المخفي والباسورد ---
-        const handleSecretTrigger = () => {
-            setGameState('login');
-            setPassword('');
-            setLoginError('');
-        };
-
-        const handleLogin = () => {
-            if (password === '1234') { // *** الباسورد السري هنا (غيّره لاحقاً) ***
-                playSound('success');
-                setGameState('chatting');
-            } else {
-                playSound('fail');
-                setLoginError('كلمة المرور غير صحيحة!');
-                setTimeout(() => setLoginError(''), 2000);
-            }
-        };
-
-        return (
-            <div className="relative h-screen w-screen p-4 overflow-hidden">
-                
-                {/* --- 1. الزر المخفي (في الزاوية اليسرى العليا) --- */}
-                <div 
-                    onClick={handleSecretTrigger} 
-                    className="absolute top-0 left-0 w-16 h-16 bg-red-500 opacity-0 active:opacity-20 cursor-pointer z-50"
-                    title="المنطقة السرية"
-                ></div>
-
-                {/* --- 2. واجهة اللعبة (التمويه) --- */}
-                {gameState === 'playing' && (
-                    <div className="h-full flex flex-col items-center">
-                        <header className="w-full flex justify-between items-center mb-8 pb-4 border-b border-gray-700">
-                            <h1 className="text-xl font-bold text-yellow-400">تحدي صيد الكرات Pro</h1>
-                            <div className="bg-gray-800 p-2 px-4 rounded-full">النقاط: <span className="text-green-400 font-mono text-xl">{score}</span></div>
-                        </header>
-                        
-                        <div className="relative flex-grow w-full bg-gray-800 rounded-lg shadow-inner overflow-hidden border border-gray-700">
-                            <div 
-                                onClick={handleBallClick}
-                                className="ball absolute w-12 h-12 bg-red-500 rounded-full shadow-lg border-4 border-white"
-                                style={{ top: `${ballPosition.top}%`, left: `${ballPosition.left}%` }}
-                            ></div>
-                        </div>
-                    </div>
-                )}
-
-                {/* --- 3. نافذة الباسورد المخفية --- */}
-                {gameState === 'login' && (
-                    <div className="absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-40 p-6 backdrop-blur-sm">
-                        <div className="bg-gray-800 p-8 rounded-2xl shadow-2xl border border-gray-700 w-full max-w-sm text-center">
-                            <h2 className="text-3xl font-extrabold mb-8 text-yellow-300">النظام السري</h2>
-                            {loginError && <p className="text-red-400 mb-4 font-bold">{loginError}</p>}
-                            <input 
-                                type="password" 
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="أدخل كود الدخول"
-                                className="w-full p-4 mb-6 bg-gray-900 rounded-lg border border-gray-600 text-center text-2xl font-mono tracking-widest text-white focus:ring-2 focus:ring-yellow-400 focus:outline-none"
-                                maxLength={4}
-                            />
-                            <div className="flex gap-4">
-                                <button onClick={() => setGameState('playing')} className="w-1/2 p-3 bg-gray-700 rounded-lg text-gray-300 font-bold hover:bg-gray-600 transition">إلغاء</button>
-                                <button onClick={handleLogin} className="w-1/2 p-3 bg-yellow-500 rounded-lg text-gray-900 font-bold hover:bg-yellow-400 transition">دخول</button>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* --- 4. واجهة المنصة السرية (قيد الإنشاء) --- */}
-                {gameState === 'chatting' && (
-                    <div className="h-full flex flex-col items-center justify-center bg-gray-950 p-6 text-center">
-                        <h1 className="text-4xl font-extrabold text-green-400 mb-6">تم الدخول بنجاح! ✅</h1>
-                        <p className="text-xl text-gray-300 mb-10">هذه هي واجهة المنصة السرية (قيد الإنشاء).</p>
-                        <p className="text-lg text-gray-400 mb-10">في الخطوة القادمة، سنربطها بتليجرام لإرسال واستقبال الرسائل.</p>
-                        <button 
-                            onClick={() => setGameState('playing')} 
-                            className="p-4 px-8 bg-red-600 rounded-full font-bold text-lg hover:bg-red-500 transition shadow-lg"
-                        >
-                            خروج وإعادة قفل
-                        </button>
-                    </div>
-                )}
-
-            </div>
-        );
-    };
-
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<GameApp />);
-</script>
+        // 3. برمجة الدردشة (Firebase)
+        // [هنا تضع كود Firebase الخاص بك الذي نسخته من الموقع]
+        
+        function sendMessage() {
+            const input = document.getElementById('msgInput');
+            if(input.value.trim() === "") return;
+            const container = document.getElementById('messages-container');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'message sent';
+            msgDiv.innerText = input.value;
+            container.appendChild(msgDiv);
+            input.value = "";
+            container.scrollTop = container.scrollHeight;
+            // هنا يتم إضافة كود Firebase لرفع الرسالة فعلياً
+        }
+    </script>
 </body>
 </html>
