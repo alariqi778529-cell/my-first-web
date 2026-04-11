@@ -3,52 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Catch The Ball</title>
+    <title>Ball Catch Pro</title>
     <style>
-        body, html { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; overflow: hidden; background: #000; }
-        #game-interface { position: fixed; width: 100%; height: 100%; background: #1a1a1a; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; }
-        #gameCanvas { border: 3px solid #333; border-radius: 10px; background: #000; }
-        .game-text { color: #0f0; margin-top: 20px; font-family: monospace; }
-        #secret-trigger { position: absolute; top: 0; left: 0; width: 60px; height: 60px; z-index: 100; }
-        #password-screen { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; }
-        #passInput { padding: 15px; border-radius: 25px; border: none; width: 250px; text-align: center; margin-bottom: 15px; background: #222; color: #fff; }
-        #loginBtn { padding: 10px 30px; border-radius: 20px; border: none; background: #0095f6; color: white; font-weight: bold; }
+        :root { --ig-blue: #0095f6; --ig-grey: #efefef; --bg-game: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); }
+        body, html { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; overflow: hidden; background: #000; }
+        
+        /* تصميم اللعبة المطور */
+        #game-interface { position: fixed; width: 100%; height: 100%; background: var(--bg-game); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; }
+        #gameCanvas { border: 5px solid rgba(255,255,255,0.2); border-radius: 20px; background: rgba(0,0,0,0.8); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .game-ui { color: white; margin-top: 15px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-weight: bold; }
+        
+        /* الزر السري المخفي */
+        #secret-trigger { position: absolute; top: 0; left: 0; width: 80px; height: 80px; z-index: 100; opacity: 0; }
+
+        /* واجهة الدردشة - ستايل إنستجرام */
         #chat-platform { display: none; position: fixed; inset: 0; background: #fff; flex-direction: column; z-index: 5; }
-        .chat-header { height: 60px; border-bottom: 1px solid #dbdbdb; display: flex; align-items: center; padding: 0 15px; justify-content: space-between; }
-        #messages-container { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; }
-        .message { max-width: 75%; padding: 10px 15px; border-radius: 20px; margin-bottom: 8px; font-size: 14px; }
-        .sent { align-self: flex-end; background: #0095f6; color: white; border-bottom-right-radius: 4px; }
-        .received { align-self: flex-start; background: #efefef; color: black; border-bottom-left-radius: 4px; }
-        .input-area { height: 70px; border-top: 1px solid #dbdbdb; display: flex; align-items: center; padding: 0 10px; gap: 10px; }
-        .input-area input { flex: 1; border: 1px solid #dbdbdb; border-radius: 25px; padding: 10px 15px; outline: none; }
+        .chat-header { height: 60px; border-bottom: 1px solid #dbdbdb; display: flex; align-items: center; padding: 0 15px; background: #fff; gap: 15px; }
+        .user-avatar { width: 35px; height: 35px; background: #ddd; border-radius: 50%; }
+        .status-info { display: flex; flex-direction: column; }
+        .status-info .name { font-weight: 600; font-size: 14px; }
+        .status-info .last-seen { font-size: 11px; color: #8e8e8e; }
+
+        #messages-container { flex: 1; overflow-y: auto; padding: 10px 15px; display: flex; flex-direction: column; background: #fff; }
+        .message-wrapper { margin-bottom: 12px; display: flex; flex-direction: column; }
+        .message { max-width: 70%; padding: 8px 15px; border-radius: 18px; font-size: 14px; position: relative; }
+        .sent { align-self: flex-end; background: var(--ig-blue); color: white; }
+        .received { align-self: flex-start; background: var(--ig-grey); color: black; }
+        .msg-time { font-size: 10px; color: #8e8e8e; margin-top: 4px; align-self: flex-end; }
+        .seen-status { font-size: 10px; color: var(--ig-blue); align-self: flex-end; margin-top: 2px; }
+
+        .input-area { padding: 10px; border-top: 1px solid #efefef; display: flex; align-items: center; gap: 10px; }
+        .input-box { flex: 1; background: #f2f2f2; border: 1px solid #dbdbdb; border-radius: 20px; padding: 8px 15px; outline: none; }
+        
+        #pass-screen { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; flex-direction: column; }
     </style>
 </head>
 <body>
 
-    <div id="secret-trigger" onclick="openLogin()"></div>
+    <div id="secret-trigger" onclick="document.getElementById('pass-screen').style.display='flex'"></div>
 
     <div id="game-interface">
-        <canvas id="gameCanvas" width="300" height="400"></canvas>
-        <div class="game-text">SCORE: <span id="score">0</span></div>
-        <div class="game-text">لعبة التقاط الكرة</div>
+        <canvas id="gameCanvas" width="320" height="450"></canvas>
+        <div class="game-ui">High Score: <span id="score">0</span></div>
+        <div class="game-ui" style="font-size: 12px;">تحدي التقاط الكرة اليومي</div>
     </div>
 
-    <div id="password-screen">
-        <input type="password" id="passInput" placeholder="أدخل الرمز السري">
-        <button id="loginBtn" onclick="verifyPassword()">دخول</button>
+    <div id="pass-screen">
+        <input type="password" id="passInput" placeholder="Password" style="padding:15px; border-radius:10px; border:none; margin-bottom:10px;">
+        <button onclick="login()" style="padding:10px 30px; background:var(--ig-blue); color:white; border:none; border-radius:5px;">Check</button>
     </div>
 
     <div id="chat-platform">
         <div class="chat-header">
-            <span>📷</span>
-            <h3>Anisa ❤️ Abdulrahman</h3>
-            <span>📞</span>
+            <div class="user-avatar"></div>
+            <div class="status-info">
+                <div class="name">المحادثة الخاصة</div>
+                <div class="last-seen" id="online-status">نشط الآن</div>
+            </div>
         </div>
         <div id="messages-container"></div>
         <div class="input-area">
-            <span>🎤</span>
-            <input type="text" id="msgInput" placeholder="مراسلة...">
-            <span style="color:#0095f6; font-weight:bold; cursor:pointer;" onclick="sendMessage()">إرسال</span>
+            <input type="text" id="msgInput" class="input-box" placeholder="مراسلة...">
+            <button onclick="sendMsg()" style="color:var(--ig-blue); border:none; background:none; font-weight:bold;">إرسال</button>
         </div>
     </div>
 
@@ -56,79 +72,101 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 
     <script>
-        // إعدادات Firebase الخاصة بك
+        // 1. إعدادات Firebase (مفاتيحك جاهزة)
         const firebaseConfig = {
-          apiKey: "AIzaSyA291VBmybm4gvrZM8Z-26scGgFTK9wn-c",
-          authDomain: "myblatfrom.firebaseapp.com",
-          projectId: "myblatfrom",
-          storageBucket: "myblatfrom.firebasestorage.app",
-          messagingSenderId: "1084981629473",
-          appId: "1:1084981629473:web:c211330b27e6d5a5940960",
-          measurementId: "G-VZK3TTRM75"
+            apiKey: "AIzaSyA291VBmybm4gvrZM8Z-26scGgFTK9wn-c",
+            authDomain: "myblatfrom.firebaseapp.com",
+            projectId: "myblatfrom",
+            storageBucket: "myblatfrom.firebasestorage.app",
+            messagingSenderId: "1084981629473",
+            appId: "1:1084981629473:web:c211330b27e6d5a5940960"
         };
-
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // نظام التخفي والسر
-        function openLogin() { document.getElementById('password-screen').style.display = 'flex'; }
-        function verifyPassword() {
-            if(document.getElementById('passInput').value === "2005223") {
-                document.getElementById('password-screen').style.display = 'none';
-                document.getElementById('game-interface').style.display = 'none';
-                document.getElementById('chat-platform').style.display = 'flex';
-                loadMessages();
-            } else { alert("حاول مجدداً في اللعبة!"); document.getElementById('password-screen').style.display = 'none'; }
-        }
+        // تحديد الهوية (بشكل آلي للمثال، يمكنك تغييرها يدوياً)
+        const currentUser = "User1"; // أنت User1 وهي User2
 
-        // إرسال الرسائل لـ Firebase
-        function sendMessage() {
+        // 2. المؤثرات الصوتية
+        const hitSound = new Audio('https://www.soundjay.com/button/sounds/button-16.mp3');
+
+        // 3. اللعبة
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        let ball = { x: 160, y: 30, dx: 3, dy: 3, radius: 10 };
+        let paddle = { w: 80, h: 12, x: 120 };
+        let score = 0;
+
+        function drawGame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // رسم الكرة بلمعة
+            let grad = ctx.createRadialGradient(ball.x, ball.y, 2, ball.x, ball.y, ball.radius);
+            grad.addColorStop(0, '#fff'); grad.addColorStop(1, '#0f0');
+            ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2); ctx.fill();
+            // رسم المضرب
+            ctx.fillStyle = "#fff"; ctx.roundRect ? ctx.fillRoundRect(paddle.x, canvas.height-30, paddle.w, paddle.h, 5) : ctx.fillRect(paddle.x, canvas.height-30, paddle.w, paddle.h);
+            ctx.fill();
+
+            ball.x += ball.dx; ball.y += ball.dy;
+            if(ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) ball.dx = -ball.dx;
+            if(ball.y - ball.radius < 0) ball.dy = -ball.dy;
+            if(ball.y + ball.radius > canvas.height - 30 && ball.x > paddle.x && ball.x < paddle.x + paddle.w) {
+                ball.dy = -ball.dy; score++; hitSound.play();
+                document.getElementById("score").innerText = score;
+            }
+            if(ball.y > canvas.height) { ball.y = 30; score = 0; document.getElementById("score").innerText = 0; }
+            requestAnimationFrame(drawGame);
+        }
+        canvas.addEventListener("touchmove", (e) => { paddle.x = e.touches[0].clientX - canvas.getBoundingClientRect().left - paddle.w/2; });
+        drawGame();
+
+        // 4. نظام الدخول والتخفي
+        function login() {
+            if(document.getElementById('passInput').value === "2005223") {
+                document.getElementById('pass-screen').style.display='none';
+                document.getElementById('game-interface').style.display='none';
+                document.getElementById('chat-platform').style.display='flex';
+                loadMsgs();
+            } else { location.reload(); }
+        }
+        document.addEventListener("visibilitychange", () => { if(document.hidden) location.reload(); });
+
+        // 5. نظام الدردشة (إنستجرام)
+        function sendMsg() {
             const text = document.getElementById('msgInput').value;
-            if(text.trim() === "") return;
-            db.collection("messages").add({
+            if(!text) return;
+            db.collection("chats").add({
                 text: text,
-                sender: "user_" + firebaseConfig.messagingSenderId.substring(0,3),
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                sender: currentUser,
+                time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                seen: false
             });
             document.getElementById('msgInput').value = "";
+            // إرسال إشعار وهمي (محاكاة)
+            console.log("إشعار من اللعبة: استمر في اللعب لتحطيم الرقم القياسي!");
         }
 
-        // جلب الرسائل مباشرة
-        function loadMessages() {
-            db.collection("messages").orderBy("timestamp", "asc").onSnapshot((snapshot) => {
+        function loadMsgs() {
+            db.collection("chats").orderBy("timestamp", "asc").onSnapshot(snap => {
                 const container = document.getElementById('messages-container');
                 container.innerHTML = "";
-                snapshot.forEach((doc) => {
-                    const msg = doc.data();
-                    const div = document.createElement('div');
-                    // تمييز رسائلك عن رسائلها بناءً على الـ Sender
-                    div.className = 'message ' + (msg.sender === "user_108" ? 'sent' : 'received');
-                    div.innerText = msg.text;
-                    container.appendChild(div);
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    const isMe = d.sender === currentUser;
+                    container.innerHTML += `
+                        <div class="message-wrapper">
+                            <div class="message ${isMe ? 'sent' : 'received'}">${d.text}</div>
+                            <div class="msg-time ${isMe ? 'sent' : 'received'}">${d.time}</div>
+                            ${isMe && d.seen ? '<div class="seen-status">مشاهدة</div>' : ''}
+                        </div>
+                    `;
+                    // تحديث حالة القراءة إذا كنت أنا المستلم
+                    if(!isMe && !d.seen) db.collection("chats").doc(doc.id).update({seen: true});
                 });
                 container.scrollTop = container.scrollHeight;
             });
         }
-
-        // اللعبة المموهة
-        const canvas = document.getElementById("gameCanvas");
-        const ctx = canvas.getContext("2d");
-        let ball = { x: 150, y: 200, dx: 2, dy: -2, radius: 8 };
-        let paddle = { w: 70, h: 10, x: 115 };
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#0f0"; ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2); ctx.fill();
-            ctx.fillStyle = "#fff"; ctx.fillRect(paddle.x, canvas.height - 20, paddle.w, paddle.h);
-            ball.x += ball.dx; ball.y += ball.dy;
-            if(ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) ball.dx = -ball.dx;
-            if(ball.y - ball.radius < 0) ball.dy = -ball.dy;
-            if(ball.y + ball.radius > canvas.height - 20 && ball.x > paddle.x && ball.x < paddle.x + paddle.w) ball.dy = -ball.dy;
-            if(ball.y > canvas.height) { ball.x = 150; ball.y = 200; }
-            requestAnimationFrame(draw);
-        }
-        canvas.addEventListener("touchmove", (e) => { paddle.x = e.touches[0].clientX - canvas.offsetLeft - paddle.w/2; });
-        draw();
-        document.addEventListener("visibilitychange", () => { if(document.hidden) window.location.reload(); });
     </script>
 </body>
 </html>
