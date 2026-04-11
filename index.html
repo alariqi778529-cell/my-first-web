@@ -3,68 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ball Catch Pro</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Ball Challenge</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --ig-blue: #0095f6; --ig-grey: #efefef; --bg-game: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); }
-        body, html { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; overflow: hidden; background: #000; }
-        
-        /* تصميم اللعبة المطور */
-        #game-interface { position: fixed; width: 100%; height: 100%; background: var(--bg-game); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; }
-        #gameCanvas { border: 5px solid rgba(255,255,255,0.2); border-radius: 20px; background: rgba(0,0,0,0.8); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .game-ui { color: white; margin-top: 15px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-weight: bold; }
-        
-        /* الزر السري المخفي */
-        #secret-trigger { position: absolute; top: 0; left: 0; width: 80px; height: 80px; z-index: 100; opacity: 0; }
+        :root {
+            --ig-gradient: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            --ig-blue: #0095f6;
+            --dark-bg: #000000;
+            --chat-bubble-me: #373737;
+            --chat-bubble-them: #262626;
+        }
 
-        /* واجهة الدردشة - ستايل إنستجرام */
-        #chat-platform { display: none; position: fixed; inset: 0; background: #fff; flex-direction: column; z-index: 5; }
-        .chat-header { height: 60px; border-bottom: 1px solid #dbdbdb; display: flex; align-items: center; padding: 0 15px; background: #fff; gap: 15px; }
-        .user-avatar { width: 35px; height: 35px; background: #ddd; border-radius: 50%; }
-        .status-info { display: flex; flex-direction: column; }
-        .status-info .name { font-weight: 600; font-size: 14px; }
-        .status-info .last-seen { font-size: 11px; color: #8e8e8e; }
+        body, html { margin: 0; padding: 0; background: var(--dark-bg); color: white; height: 100%; overflow: hidden; font-family: -apple-system, system-ui, sans-serif; }
 
-        #messages-container { flex: 1; overflow-y: auto; padding: 10px 15px; display: flex; flex-direction: column; background: #fff; }
-        .message-wrapper { margin-bottom: 12px; display: flex; flex-direction: column; }
-        .message { max-width: 70%; padding: 8px 15px; border-radius: 18px; font-size: 14px; position: relative; }
-        .sent { align-self: flex-end; background: var(--ig-blue); color: white; }
-        .received { align-self: flex-start; background: var(--ig-grey); color: black; }
-        .msg-time { font-size: 10px; color: #8e8e8e; margin-top: 4px; align-self: flex-end; }
-        .seen-status { font-size: 10px; color: var(--ig-blue); align-self: flex-end; margin-top: 2px; }
+        /* --- واجهة اللعبة الاحترافية --- */
+        #game-interface { position: fixed; inset: 0; background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 20; }
+        #gameCanvas { background: #050505; border-radius: 15px; border: 2px solid #333; touch-action: none; width: 90vw; height: 60vh; }
+        .game-stats { font-size: 24px; font-weight: bold; margin-bottom: 20px; color: #0f0; font-family: 'Courier New', monospace; }
 
-        .input-area { padding: 10px; border-top: 1px solid #efefef; display: flex; align-items: center; gap: 10px; }
-        .input-box { flex: 1; background: #f2f2f2; border: 1px solid #dbdbdb; border-radius: 20px; padding: 8px 15px; outline: none; }
+        /* الزر السري المخفي (أعلى اليسار) */
+        #secret-trigger { position: absolute; top: 0; left: 0; width: 60px; height: 60px; z-index: 100; opacity: 0; }
+
+        /* --- واجهة إنستجرام (المحادثة) --- */
+        #chat-platform { display: none; position: fixed; inset: 0; background: var(--dark-bg); flex-direction: column; z-index: 30; }
         
-        #pass-screen { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; flex-direction: column; }
+        /* الهيدر */
+        .chat-header { height: 60px; display: flex; align-items: center; padding: 0 15px; border-bottom: 1px solid #262626; justify-content: space-between; }
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--ig-gradient); padding: 2px; }
+        .avatar img { width: 100%; height: 100%; border-radius: 50%; background: #000; }
+        .status-text { display: flex; flex-direction: column; }
+        .status-text .name { font-weight: bold; font-size: 14px; }
+        .status-text .status { font-size: 11px; color: #a8a8a8; }
+
+        /* ساحة الرسائل */
+        #messages-container { flex: 1; overflow-y: auto; padding: 20px 15px; display: flex; flex-direction: column; gap: 8px; }
+        .msg { max-width: 75%; padding: 10px 16px; border-radius: 22px; font-size: 14px; line-height: 1.4; position: relative; }
+        .me { align-self: flex-end; background: var(--ig-blue); color: white; border-bottom-right-radius: 4px; }
+        .them { align-self: flex-start; background: #262626; color: white; border-bottom-left-radius: 4px; }
+        .time { font-size: 9px; color: #a8a8a8; margin-top: 4px; align-self: inherit; }
+
+        /* منطقة الإدخال */
+        .input-area { padding: 10px 15px; display: flex; align-items: center; gap: 15px; border-top: 1px solid #262626; margin-bottom: 10px; }
+        .input-wrapper { flex: 1; background: #262626; border-radius: 25px; display: flex; align-items: center; padding: 5px 15px; }
+        .input-wrapper input { background: transparent; border: none; color: white; flex: 1; padding: 8px 0; outline: none; }
+        .send-btn { color: var(--ig-blue); font-weight: bold; font-size: 14px; cursor: pointer; }
+
+        #pass-screen { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 1000; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
-    <div id="secret-trigger" onclick="document.getElementById('pass-screen').style.display='flex'"></div>
+    <div id="secret-trigger" onclick="showPass()"></div>
 
     <div id="game-interface">
-        <canvas id="gameCanvas" width="320" height="450"></canvas>
-        <div class="game-ui">High Score: <span id="score">0</span></div>
-        <div class="game-ui" style="font-size: 12px;">تحدي التقاط الكرة اليومي</div>
+        <div class="game-stats">SCORE: <span id="score">0</span></div>
+        <canvas id="gameCanvas"></canvas>
+        <p style="color: #666; margin-top: 20px;">حرك المضرب لصد الكرة</p>
     </div>
 
     <div id="pass-screen">
-        <input type="password" id="passInput" placeholder="Password" style="padding:15px; border-radius:10px; border:none; margin-bottom:10px;">
-        <button onclick="login()" style="padding:10px 30px; background:var(--ig-blue); color:white; border:none; border-radius:5px;">Check</button>
+        <div style="text-align: center;">
+            <i class="fab fa-instagram" style="font-size: 50px; margin-bottom: 20px; background: var(--ig-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+            <br>
+            <input type="password" id="passInput" placeholder="كلمة المرور" style="padding: 12px; border-radius: 8px; border: 1px solid #333; background: #1a1a1a; color: white; width: 200px;">
+            <br>
+            <button onclick="checkPass()" style="margin-top: 15px; padding: 10px 40px; border-radius: 8px; border: none; background: var(--ig-blue); color: white; font-weight: bold;">دخول</button>
+        </div>
     </div>
 
     <div id="chat-platform">
         <div class="chat-header">
-            <div class="user-avatar"></div>
-            <div class="status-info">
-                <div class="name">المحادثة الخاصة</div>
-                <div class="last-seen" id="online-status">نشط الآن</div>
+            <div class="user-info">
+                <i class="fas fa-chevron-right" onclick="location.reload()"></i>
+                <div class="avatar"></div>
+                <div class="status-text">
+                    <span class="name">المساحة الخاصة</span>
+                    <span class="status">متصل الآن</span>
+                </div>
+            </div>
+            <div class="header-icons">
+                <i class="fas fa-phone" style="margin-left: 15px;"></i>
+                <i class="fas fa-video"></i>
             </div>
         </div>
         <div id="messages-container"></div>
         <div class="input-area">
-            <input type="text" id="msgInput" class="input-box" placeholder="مراسلة...">
-            <button onclick="sendMsg()" style="color:var(--ig-blue); border:none; background:none; font-weight:bold;">إرسال</button>
+            <i class="fas fa-camera" style="font-size: 20px;"></i>
+            <div class="input-wrapper">
+                <input type="text" id="msgInput" placeholder="مراسلة...">
+            </div>
+            <span class="send-btn" onclick="sendMsg()">إرسال</span>
         </div>
     </div>
 
@@ -72,7 +103,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 
     <script>
-        // 1. إعدادات Firebase (مفاتيحك جاهزة)
+        // --- إعدادات Firebase ---
         const firebaseConfig = {
             apiKey: "AIzaSyA291VBmybm4gvrZM8Z-26scGgFTK9wn-c",
             authDomain: "myblatfrom.firebaseapp.com",
@@ -83,90 +114,88 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        const myID = "User1"; // في نسخة حبيبتك خليها User2
 
-        // تحديد الهوية (بشكل آلي للمثال، يمكنك تغييرها يدوياً)
-        const currentUser = "User1"; // أنت User1 وهي User2
-
-        // 2. المؤثرات الصوتية
-        const hitSound = new Audio('https://www.soundjay.com/button/sounds/button-16.mp3');
-
-        // 3. اللعبة
+        // --- منطق اللعبة (تم الإصلاح للجوال) ---
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
-        let ball = { x: 160, y: 30, dx: 3, dy: 3, radius: 10 };
-        let paddle = { w: 80, h: 12, x: 120 };
+        canvas.width = window.innerWidth * 0.9;
+        canvas.height = window.innerHeight * 0.6;
+
+        let ball = { x: canvas.width/2, y: 30, dx: 4, dy: 4, radius: 10 };
+        let paddle = { w: 100, h: 15, x: (canvas.width-100)/2 };
         let score = 0;
 
-        function drawGame() {
+        function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // رسم الكرة بلمعة
-            let grad = ctx.createRadialGradient(ball.x, ball.y, 2, ball.x, ball.y, ball.radius);
-            grad.addColorStop(0, '#fff'); grad.addColorStop(1, '#0f0');
-            ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2); ctx.fill();
-            // رسم المضرب
-            ctx.fillStyle = "#fff"; ctx.roundRect ? ctx.fillRoundRect(paddle.x, canvas.height-30, paddle.w, paddle.h, 5) : ctx.fillRect(paddle.x, canvas.height-30, paddle.w, paddle.h);
-            ctx.fill();
-
+            // الكرة
+            ctx.fillStyle = "#0f0"; ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2); ctx.fill();
+            // المضرب
+            ctx.fillStyle = "#fff"; ctx.fillRect(paddle.x, canvas.height - 20, paddle.w, paddle.h);
+            
             ball.x += ball.dx; ball.y += ball.dy;
             if(ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) ball.dx = -ball.dx;
             if(ball.y - ball.radius < 0) ball.dy = -ball.dy;
-            if(ball.y + ball.radius > canvas.height - 30 && ball.x > paddle.x && ball.x < paddle.x + paddle.w) {
-                ball.dy = -ball.dy; score++; hitSound.play();
-                document.getElementById("score").innerText = score;
+            if(ball.y + ball.radius > canvas.height - 20 && ball.x > paddle.x && ball.x < paddle.x + paddle.w) {
+                ball.dy = -ball.dy; score++; document.getElementById("score").innerText = score;
+                ball.dx *= 1.05; ball.dy *= 1.05; // زيادة الصعوبة
             }
-            if(ball.y > canvas.height) { ball.y = 30; score = 0; document.getElementById("score").innerText = 0; }
-            requestAnimationFrame(drawGame);
+            if(ball.y > canvas.height) { ball.x = canvas.width/2; ball.y = 30; ball.dx = 4; ball.dy = 4; score = 0; document.getElementById("score").innerText = 0; }
+            requestAnimationFrame(draw);
         }
-        canvas.addEventListener("touchmove", (e) => { paddle.x = e.touches[0].clientX - canvas.getBoundingClientRect().left - paddle.w/2; });
-        drawGame();
+        canvas.addEventListener("touchmove", (e) => {
+            let touchX = e.touches[0].clientX - canvas.offsetLeft;
+            paddle.x = touchX - paddle.w/2;
+            e.preventDefault();
+        }, {passive: false});
+        draw();
 
-        // 4. نظام الدخول والتخفي
-        function login() {
+        // --- الوظائف السرية ---
+        function showPass() { document.getElementById('pass-screen').style.display = 'flex'; }
+        function checkPass() {
             if(document.getElementById('passInput').value === "2005223") {
-                document.getElementById('pass-screen').style.display='none';
-                document.getElementById('game-interface').style.display='none';
-                document.getElementById('chat-platform').style.display='flex';
-                loadMsgs();
+                document.getElementById('pass-screen').style.display = 'none';
+                document.getElementById('game-interface').style.display = 'none';
+                document.getElementById('chat-platform').style.display = 'flex';
+                loadMessages();
             } else { location.reload(); }
         }
-        document.addEventListener("visibilitychange", () => { if(document.hidden) location.reload(); });
 
-        // 5. نظام الدردشة (إنستجرام)
+        // --- نظام الدردشة الاحترافي ---
         function sendMsg() {
-            const text = document.getElementById('msgInput').value;
-            if(!text) return;
+            const val = document.getElementById('msgInput').value;
+            if(!val) return;
             db.collection("chats").add({
-                text: text,
-                sender: currentUser,
-                time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                text: val,
+                sender: myID,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                timeStr: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
                 seen: false
             });
             document.getElementById('msgInput').value = "";
-            // إرسال إشعار وهمي (محاكاة)
-            console.log("إشعار من اللعبة: استمر في اللعب لتحطيم الرقم القياسي!");
         }
 
-        function loadMsgs() {
+        function loadMessages() {
             db.collection("chats").orderBy("timestamp", "asc").onSnapshot(snap => {
                 const container = document.getElementById('messages-container');
                 container.innerHTML = "";
                 snap.forEach(doc => {
                     const d = doc.data();
-                    const isMe = d.sender === currentUser;
-                    container.innerHTML += `
-                        <div class="message-wrapper">
-                            <div class="message ${isMe ? 'sent' : 'received'}">${d.text}</div>
-                            <div class="msg-time ${isMe ? 'sent' : 'received'}">${d.time}</div>
-                            ${isMe && d.seen ? '<div class="seen-status">مشاهدة</div>' : ''}
-                        </div>
-                    `;
-                    // تحديث حالة القراءة إذا كنت أنا المستلم
+                    const isMe = d.sender === myID;
+                    const msgHtml = `
+                        <div class="msg ${isMe ? 'me' : 'them'}">
+                            ${d.text}
+                            <div class="time">${d.timeStr} ${isMe && d.seen ? '• مشاهَد' : ''}</div>
+                        </div>`;
+                    container.innerHTML += msgHtml;
                     if(!isMe && !d.seen) db.collection("chats").doc(doc.id).update({seen: true});
                 });
                 container.scrollTop = container.scrollHeight;
             });
         }
+
+        // إغلاق عند الخروج
+        document.addEventListener("visibilitychange", () => { if(document.hidden) location.reload(); });
     </script>
 </body>
 </html>
