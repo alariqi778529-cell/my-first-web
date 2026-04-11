@@ -3,40 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber Security Profile</title>
+    <title>كاشف الأرقام - الأمن السيبراني</title>
     <style>
+        :root { --main-color: #00ff41; --bg-dark: #0a0a0a; }
         body {
-            background-color: #0a0a0a;
-            color: #00ff41;
-            font-family: 'Courier New', Courier, monospace;
+            background-color: var(--bg-dark);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100vh;
+            padding: 20px;
             margin: 0;
-            overflow: hidden;
         }
-        .container {
-            text-align: center;
-            border: 1px solid #00ff41;
-            padding: 40px;
-            box-shadow: 0 0 20px #00ff41;
+        .header { text-align: center; margin-bottom: 40px; margin-top: 50px; }
+        .header h1 { color: var(--main-color); text-shadow: 0 0 10px var(--main-color); font-size: 2rem; }
+        
+        .search-container {
+            width: 90%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid var(--main-color);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background: #1a1a1a;
+            color: var(--main-color);
+            font-size: 1.1rem;
+            box-sizing: border-box;
+            outline: none;
+        }
+        .btn-search {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--main-color);
+            color: black;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-search:hover { background-color: #00cc33; box-shadow: 0 0 15px var(--main-color); }
+
+        .extra-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+            width: 100%;
+        }
+        .btn-alt {
+            padding: 10px;
+            background: transparent;
+            color: var(--main-color);
+            border: 1px solid var(--main-color);
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .results {
+            margin-top: 30px;
+            width: 90%;
+            max-width: 500px;
+            padding: 15px;
             border-radius: 10px;
-            background: rgba(0, 0, 0, 0.8);
+            background: #111;
+            display: none; /* مخفي حتى تظهر النتائج */
+            border-right: 5px solid var(--main-color);
         }
-        h1 { font-size: 2.5rem; margin-bottom: 10px; }
-        p { font-size: 1.2rem; color: #fff; }
-        .status { color: #00ff41; font-weight: bold; animation: blink 1s infinite; }
-        @keyframes blink { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>SYSTEM ACTIVE</h1>
-        <p>مرحباً بك في مشروعي الأول</p>
-        <p>تخصص: <span style="color: #00ff41;">الأمن السيبراني</span></p>
-        <div class="status">_جاري الاتصال بالسيرفر...</div>
+
+    <div class="header">
+        <h1>كاشف أرقام اليمن 🇾🇪</h1>
+        <p>نظام البحث المتقدم - نسخة الأمن السيبراني</p>
     </div>
+
+    <div class="search-container">
+        <input type="number" id="phoneInput" placeholder="أدخل رقم الهاتف (7xxxxxxxx)...">
+        <button class="btn-search" onclick="startSearch()">بـحـث الآن</button>
+        
+        <div class="extra-buttons">
+            <button class="btn-alt">البحث بالاسم</button>
+            <button class="btn-alt">سجل البحث</button>
+            <button class="btn-alt">تحديث البيانات</button>
+            <button class="btn-alt">اتصل بنا</button>
+        </div>
+    </div>
+
+    <div id="resultBox" class="results">
+        <p style="color: grey; font-size: 0.8rem;">نتائج البحث:</p>
+        <h3 id="resultName" style="margin: 5px 0;"></h3>
+        <p id="resultPhone" style="color: var(--main-color);"></p>
+    </div>
+
+    <script>
+        function startSearch() {
+            const phone = document.getElementById('phoneInput').value;
+            const resultBox = document.getElementById('resultBox');
+            const resultName = document.getElementById('resultName');
+            const resultPhone = document.getElementById('resultPhone');
+
+            if(phone.length < 9) {
+                alert("يرجى إدخال رقم صحيح");
+                return;
+            }
+
+            // محاكاة لعملية البحث حتى نقوم بربط الـ Database
+            resultBox.style.display = 'block';
+            resultName.innerText = "جاري البحث عن الرقم " + phone + "...";
+            resultPhone.innerText = "هذا الجزء سيتم ربطه بالتطبيق قريباً";
+        }
+    </script>
 </body>
 </html>
