@@ -5,34 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Catch The Ball</title>
     <style>
-        body, html { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; background: #000; }
-        
-        /* واجهة اللعبة - التمويه */
+        body, html { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; overflow: hidden; background: #000; }
         #game-interface { position: fixed; width: 100%; height: 100%; background: #1a1a1a; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; }
-        #gameCanvas { border: 3px solid #333; border-radius: 10px; background: #000; box-shadow: 0 0 20px rgba(0,255,0,0.2); }
+        #gameCanvas { border: 3px solid #333; border-radius: 10px; background: #000; }
         .game-text { color: #0f0; margin-top: 20px; font-family: monospace; }
-        
-        /* الزر السري المخفي */
-        #secret-trigger { position: absolute; top: 0; left: 0; width: 60px; height: 60px; z-index: 100; cursor: default; }
-
-        /* شاشة كلمة المرور */
+        #secret-trigger { position: absolute; top: 0; left: 0; width: 60px; height: 60px; z-index: 100; }
         #password-screen { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; }
-        #passInput { padding: 15px; border-radius: 25px; border: none; width: 250px; text-align: center; font-size: 18px; margin-bottom: 15px; background: #222; color: #fff; }
-        #loginBtn { padding: 10px 30px; border-radius: 20px; border: none; background: #0095f6; color: white; font-weight: bold; cursor: pointer; }
-
-        /* واجهة المنصة - ستايل انستجرام */
+        #passInput { padding: 15px; border-radius: 25px; border: none; width: 250px; text-align: center; margin-bottom: 15px; background: #222; color: #fff; }
+        #loginBtn { padding: 10px 30px; border-radius: 20px; border: none; background: #0095f6; color: white; font-weight: bold; }
         #chat-platform { display: none; position: fixed; inset: 0; background: #fff; flex-direction: column; z-index: 5; }
-        .chat-header { height: 60px; border-bottom: 1px solid #dbdbdb; display: flex; align-items: center; padding: 0 15px; justify-content: space-between; background: #fff; position: sticky; top: 0; }
-        .chat-header h3 { font-size: 16px; margin: 0; }
-        
-        #messages-container { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; background: #fff; }
-        .message { max-width: 75%; padding: 10px 15px; border-radius: 20px; margin-bottom: 8px; font-size: 14px; position: relative; line-height: 1.4; }
+        .chat-header { height: 60px; border-bottom: 1px solid #dbdbdb; display: flex; align-items: center; padding: 0 15px; justify-content: space-between; }
+        #messages-container { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; }
+        .message { max-width: 75%; padding: 10px 15px; border-radius: 20px; margin-bottom: 8px; font-size: 14px; }
         .sent { align-self: flex-end; background: #0095f6; color: white; border-bottom-right-radius: 4px; }
         .received { align-self: flex-start; background: #efefef; color: black; border-bottom-left-radius: 4px; }
-
-        .input-area { height: 70px; border-top: 1px solid #dbdbdb; display: flex; align-items: center; padding: 0 10px; background: #fff; gap: 10px; }
+        .input-area { height: 70px; border-top: 1px solid #dbdbdb; display: flex; align-items: center; padding: 0 10px; gap: 10px; }
         .input-area input { flex: 1; border: 1px solid #dbdbdb; border-radius: 25px; padding: 10px 15px; outline: none; }
-        .icon-btn { font-size: 20px; cursor: pointer; color: #262626; }
     </style>
 </head>
 <body>
@@ -42,7 +30,7 @@
     <div id="game-interface">
         <canvas id="gameCanvas" width="300" height="400"></canvas>
         <div class="game-text">SCORE: <span id="score">0</span></div>
-        <div class="game-text">اسحب المضرب لصد الكرة</div>
+        <div class="game-text">لعبة التقاط الكرة</div>
     </div>
 
     <div id="password-screen">
@@ -56,79 +44,91 @@
             <h3>Anisa ❤️ Abdulrahman</h3>
             <span>📞</span>
         </div>
-        <div id="messages-container">
-            <div class="message received">أهلاً بك في مساحتنا الخاصة..</div>
-            <div class="message sent">تم تفعيل المنصة بنجاح!</div>
-        </div>
+        <div id="messages-container"></div>
         <div class="input-area">
-            <span class="icon-btn">🎤</span>
+            <span>🎤</span>
             <input type="text" id="msgInput" placeholder="مراسلة...">
-            <span class="icon-btn" onclick="sendMessage()">🖼️</span>
-            <span class="icon-btn" style="color:#0095f6; font-weight:bold;" onclick="sendMessage()">إرسال</span>
+            <span style="color:#0095f6; font-weight:bold; cursor:pointer;" onclick="sendMessage()">إرسال</span>
         </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 
     <script>
-        // 1. إعدادات اللعبة المموهة
-        const canvas = document.getElementById("gameCanvas");
-        const ctx = canvas.getContext("2d");
-        let ball = { x: 150, y: 200, dx: 2, dy: -2, radius: 8 };
-        let paddle = { w: 70, h: 10, x: 115 };
-        let score = 0;
+        // إعدادات Firebase الخاصة بك
+        const firebaseConfig = {
+          apiKey: "AIzaSyA291VBmybm4gvrZM8Z-26scGgFTK9wn-c",
+          authDomain: "myblatfrom.firebaseapp.com",
+          projectId: "myblatfrom",
+          storageBucket: "myblatfrom.firebasestorage.app",
+          messagingSenderId: "1084981629473",
+          appId: "1:1084981629473:web:c211330b27e6d5a5940960",
+          measurementId: "G-VZK3TTRM75"
+        };
 
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#0f0";
-            ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2); ctx.fill();
-            ctx.fillStyle = "#fff";
-            ctx.fillRect(paddle.x, canvas.height - 20, paddle.w, paddle.h);
-            
-            ball.x += ball.dx; ball.y += ball.dy;
-            if(ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) ball.dx = -ball.dx;
-            if(ball.y - ball.radius < 0) ball.dy = -ball.dy;
-            if(ball.y + ball.radius > canvas.height - 20 && ball.x > paddle.x && ball.x < paddle.x + paddle.w) {
-                ball.dy = -ball.dy; score++; document.getElementById("score").innerText = score;
-            }
-            if(ball.y > canvas.height) { ball.x = 150; ball.y = 200; score = 0; document.getElementById("score").innerText = 0; }
-            requestAnimationFrame(draw);
-        }
-        canvas.addEventListener("touchmove", (e) => {
-            let rect = canvas.getBoundingClientRect();
-            paddle.x = e.touches[0].clientX - rect.left - paddle.w/2;
-        });
-        draw();
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-        // 2. نظام التمويه والسر
+        // نظام التخفي والسر
         function openLogin() { document.getElementById('password-screen').style.display = 'flex'; }
         function verifyPassword() {
             if(document.getElementById('passInput').value === "2005223") {
                 document.getElementById('password-screen').style.display = 'none';
                 document.getElementById('game-interface').style.display = 'none';
                 document.getElementById('chat-platform').style.display = 'flex';
-            } else { alert("خطأ في اللعبة!"); document.getElementById('password-screen').style.display = 'none'; }
+                loadMessages();
+            } else { alert("حاول مجدداً في اللعبة!"); document.getElementById('password-screen').style.display = 'none'; }
         }
 
-        // إرجاع المستخدم للعبة عند الخروج أو قفل الشاشة
-        document.addEventListener("visibilitychange", () => { if(document.hidden) window.location.reload(); });
-
-        // 3. برمجة الدردشة (Firebase)
-        // [هنا تضع كود Firebase الخاص بك الذي نسخته من الموقع]
-        
+        // إرسال الرسائل لـ Firebase
         function sendMessage() {
-            const input = document.getElementById('msgInput');
-            if(input.value.trim() === "") return;
-            const container = document.getElementById('messages-container');
-            const msgDiv = document.createElement('div');
-            msgDiv.className = 'message sent';
-            msgDiv.innerText = input.value;
-            container.appendChild(msgDiv);
-            input.value = "";
-            container.scrollTop = container.scrollHeight;
-            // هنا يتم إضافة كود Firebase لرفع الرسالة فعلياً
+            const text = document.getElementById('msgInput').value;
+            if(text.trim() === "") return;
+            db.collection("messages").add({
+                text: text,
+                sender: "user_" + firebaseConfig.messagingSenderId.substring(0,3),
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            document.getElementById('msgInput').value = "";
         }
+
+        // جلب الرسائل مباشرة
+        function loadMessages() {
+            db.collection("messages").orderBy("timestamp", "asc").onSnapshot((snapshot) => {
+                const container = document.getElementById('messages-container');
+                container.innerHTML = "";
+                snapshot.forEach((doc) => {
+                    const msg = doc.data();
+                    const div = document.createElement('div');
+                    // تمييز رسائلك عن رسائلها بناءً على الـ Sender
+                    div.className = 'message ' + (msg.sender === "user_108" ? 'sent' : 'received');
+                    div.innerText = msg.text;
+                    container.appendChild(div);
+                });
+                container.scrollTop = container.scrollHeight;
+            });
+        }
+
+        // اللعبة المموهة
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        let ball = { x: 150, y: 200, dx: 2, dy: -2, radius: 8 };
+        let paddle = { w: 70, h: 10, x: 115 };
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#0f0"; ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = "#fff"; ctx.fillRect(paddle.x, canvas.height - 20, paddle.w, paddle.h);
+            ball.x += ball.dx; ball.y += ball.dy;
+            if(ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) ball.dx = -ball.dx;
+            if(ball.y - ball.radius < 0) ball.dy = -ball.dy;
+            if(ball.y + ball.radius > canvas.height - 20 && ball.x > paddle.x && ball.x < paddle.x + paddle.w) ball.dy = -ball.dy;
+            if(ball.y > canvas.height) { ball.x = 150; ball.y = 200; }
+            requestAnimationFrame(draw);
+        }
+        canvas.addEventListener("touchmove", (e) => { paddle.x = e.touches[0].clientX - canvas.offsetLeft - paddle.w/2; });
+        draw();
+        document.addEventListener("visibilitychange", () => { if(document.hidden) window.location.reload(); });
     </script>
 </body>
 </html>
