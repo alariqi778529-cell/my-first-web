@@ -2,15 +2,41 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>مشروعي الأول</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Security Profile</title>
     <style>
-        body { font-family: sans-serif; text-align: center; background-color: #f4f4f4; padding-top: 50px; }
-        h1 { color: #333; }
-        p { color: #666; }
+        body {
+            background-color: #0a0a0a;
+            color: #00ff41;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            border: 1px solid #00ff41;
+            padding: 40px;
+            box-shadow: 0 0 20px #00ff41;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.8);
+        }
+        h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        p { font-size: 1.2rem; color: #fff; }
+        .status { color: #00ff41; font-weight: bold; animation: blink 1s infinite; }
+        @keyframes blink { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
     </style>
 </head>
 <body>
-    <h1>أهلاً بك في مشروعي الجديد!</h1>
-    <p>هذه الصفحة تم إنشاؤها مباشرة من GitHub.</p>
+    <div class="container">
+        <h1>SYSTEM ACTIVE</h1>
+        <p>مرحباً بك في مشروعي الأول</p>
+        <p>تخصص: <span style="color: #00ff41;">الأمن السيبراني</span></p>
+        <div class="status">_جاري الاتصال بالسيرفر...</div>
+    </div>
 </body>
 </html>
