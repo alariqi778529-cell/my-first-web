@@ -3,210 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CYBER VAULT | الخزنة المشفرة</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
-
+    <title>خزنَتي السرية</title>
     <style>
         body {
-            background-color: #000;
-            color: #0f0;
-            font-family: 'Courier New', Courier, monospace;
-            margin: 0;
-            overflow-x: hidden;
-        }
-
-        /* خلفية مصفوفة الرموز (Matrix Background) */
-        #matrix-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            opacity: 0.3;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
+            background-color: #121212;
+            color: #00ffcc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
             padding: 20px;
-            border: 1px solid #0f0;
-            box-shadow: 0 0 15px #0f0;
-            background: rgba(0, 20, 0, 0.9);
         }
-
-        h1 { text-align: center; text-shadow: 0 0 10px #0f0; }
-
-        input, button, textarea {
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: #1e1e1e;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,255,204,0.2);
+            border: 1px solid #00ffcc;
+        }
+        h1 { margin-bottom: 25px; font-size: 24px; text-transform: uppercase; }
+        textarea {
             width: 100%;
+            height: 100px;
+            background: #2a2a2a;
+            border: 1px solid #333;
+            color: #fff;
             padding: 10px;
-            margin: 10px 0;
-            background: #000;
-            border: 1px solid #0f0;
-            color: #0f0;
-            outline: none;
+            border-radius: 6px;
+            box-sizing: border-box;
+            resize: none;
+            margin-bottom: 15px;
         }
-
+        input[type="file"] { margin: 15px 0; color: #fff; }
         button {
-            cursor: pointer;
+            background: #00ffcc;
+            color: #121212;
+            border: none;
+            padding: 12px 25px;
             font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
             transition: 0.3s;
         }
-
-        button:hover {
-            background: #0f0;
-            color: #000;
-            box-shadow: 0 0 20px #0f0;
-        }
-
-        .file-list {
-            margin-top: 20px;
-            border-top: 1px solid #0f0;
-            padding-top: 10px;
-        }
-
-        .status { font-size: 0.8em; color: #888; }
+        button:hover { background: #00b38f; }
+        .btn-id { background: #ffcc00; color: #000; margin-bottom: 15px; }
+        .btn-id:hover { background: #cca300; }
+        #status { margin-top: 15px; font-weight: bold; color: #ff3333; }
+        #chatIdDisplay { margin: 10px 0; color: #ffcc00; font-size: 14px; }
     </style>
 </head>
 <body>
 
-    <canvas id="matrix-canvas"></canvas>
+<div class="container">
+    <h1>Vault To Telegram 🔐</h1>
+    
+    <button class="btn-id" onclick="getChatId()">🔄 جلب رقم الـ Chat ID للجروب تلقائياً</button>
+    <div id="chatIdDisplay">اكتب رسالة بالجروب أولاً ثم اضغط الزر</div>
 
-    <div class="container">
-        <h1>[ CYBER-VAULT v1.0 ]</h1>
+    <hr style="border: 0.5px solid #333; margin: 20px 0;">
+
+    <textarea id="textInput" placeholder="اكتب النص السري هنا..."></textarea>
+    <input type="file" id="fileInput">
+    <button onclick="sendToVault()">إرسال إلى الخزنة 🚀</button>
+    
+    <div id="status"></div>
+</div>
+
+<script>
+    // التوكن الخاص بك تم وضعه هنا مباشرة
+    const TOKEN = "8811597212:AAH8i_l4zOD4TtNETuMIoM7vpKR814hAHgo";
+    
+    // متغير لحفظ الـ Chat ID بمجرد جلبة، أو يمكنك كتابته يدوياً هنا إذا عرفته لاحقاً
+    let CHAT_ID = ""; 
+
+    // دالة جلب الـ Chat ID تلقائياً
+    async function getChatId() {
+        const statusDiv = document.getElementById('status');
+        const idDisplay = document.getElementById('chatIdDisplay');
+        statusDiv.innerText = "جاري البحث...";
         
-        <div id="auth-section">
-            <input type="email" id="email" placeholder="البريد الإلكتروني">
-            <input type="password" id="password" placeholder="كلمة المرور">
-            <button onclick="login()">الدخول إلى النظام</button>
-            <button onclick="register()">إنشاء حساب جديد</button>
-        </div>
-
-        <div id="vault-section" style="display:none;">
-            <h3>أهلاً بك أيها المستخدم.. النظام جاهز</h3>
-            <input type="password" id="master-key" placeholder="أدخل مفتاح التشفير (Master Key) - هام جداً">
-            <hr>
-            <textarea id="secret-note" placeholder="اكتب نصاً سرياً لتشفيره وحفظه..."></textarea>
-            <button onclick="saveNote()">تشفير وحفظ النص</button>
+        try {
+            let response = await fetch(`https://api.telegram.org/bot${TOKEN}/getUpdates`);
+            let data = await response.json();
             
-            <input type="file" id="file-input">
-            <button onclick="uploadFile()">تشفير ورفع ملف</button>
-            
-            <div class="file-list" id="data-display">
-                </div>
-            <button onclick="logout()">تسجيل الخروج</button>
-        </div>
-    </div>
-
-    <script>
-        // إعدادات Firebase التي أرسلتها أنت
-        const firebaseConfig = {
-            apiKey: "AIzaSyA291VBmybm4gvrZM8Z-26scGgFTK9wn-c",
-            authDomain: "myblatfrom.firebaseapp.com",
-            projectId: "myblatfrom",
-            storageBucket: "myblatfrom.firebasestorage.app",
-            messagingSenderId: "1084981629473",
-            appId: "1:1084981629473:web:c211330b27e6d5a5940960",
-            measurementId: "G-VZK3TTRM75"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        const storage = firebase.storage();
-
-        // --- وظائف الأنيميشن (Matrix) ---
-        const canvas = document.getElementById('matrix-canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        const chars = "01ABCDEFGHIJKLMNOPQRSTUVWXYZｦｱｳｴｵｶｷｸｹｺ";
-        const fontSize = 16;
-        const columns = canvas.width / fontSize;
-        const drops = Array(Math.floor(columns)).fill(1);
-
-        function drawMatrix() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#0f0";
-            ctx.font = fontSize + "px monospace";
-            for (let i = 0; i < drops.length; i++) {
-                const text = chars.charAt(Math.floor(Math.random() * chars.length));
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
+            if (data.result && data.result.length > 0) {
+                // نأخذ آخر تحديث قادم للبوت
+                let lastUpdate = data.result[data.result.length - 1];
+                if (lastUpdate.message) {
+                    CHAT_ID = lastUpdate.message.chat.id;
+                    let title = lastUpdate.message.chat.title || "محادثة شخصية";
+                    idDisplay.innerHTML = `✅ تم العثور على الجروب: <b>${title}</b> <br> الـ ID هو: <code style="color:#fff">${CHAT_ID}</code>`;
+                    statusDiv.innerText = "تم الحفظ مؤقتاً! يمكنك الإرسال الآن.";
+                    statusDiv.style.color = "#00ffcc";
+                    return;
+                }
             }
+            statusDiv.innerText = "❌ لم يتم العثور على بيانات. أرسل أي رسالة داخل الجروب أولاً ثم جرب مجدداً.";
+            statusDiv.style.color = "#ff3333";
+        } catch (error) {
+            statusDiv.innerText = "خطأ في الاتصال بتليجرام.";
         }
-        setInterval(drawMatrix, 50);
+    }
 
-        // --- وظائف الحماية والتشفير ---
+    // دالة إرسال البيانات (نصوص أو ملفات)
+    async function sendToVault() {
+        const text = document.getElementById('textInput').value;
+        const fileInput = document.getElementById('fileInput');
+        const statusDiv = document.getElementById('status');
 
-        // الدخول
-        function login() {
-            const e = document.getElementById('email').value;
-            const p = document.getElementById('password').value;
-            auth.signInWithEmailAndPassword(e, p)
-                .then(() => { showVault(); })
-                .catch(err => alert("خطأ في الدخول: " + err.message));
-        }
-
-        function showVault() {
-            document.getElementById('auth-section').style.display = 'none';
-            document.getElementById('vault-section').style.display = 'block';
-            loadData();
-        }
-
-        // تشفير وحفظ نص
-        async function saveNote() {
-            const note = document.getElementById('secret-note').value;
-            const key = document.getElementById('master-key').value;
-            if(!key) return alert("يجب إدخال مفتاح التشفير أولاً!");
-
-            // تشفير النص بـ AES
-            const encryptedNote = CryptoJS.AES.encrypt(note, key).toString();
-
-            await db.collection("vaults").add({
-                userId: auth.currentUser.uid,
-                data: encryptedNote,
-                type: 'text',
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            alert("تم التشفير والحفظ في السحابة بنجاح!");
-            loadData();
+        if (!CHAT_ID) {
+            statusDiv.innerText = "❌ الرجاء جلب الـ Chat ID أولاً بالضغط على الزر الأصفر!";
+            statusDiv.style.color = "#ff3333";
+            return;
         }
 
-        // استعادة البيانات وفك التشفير
-        async function loadData() {
-            const key = document.getElementById('master-key').value;
-            const display = document.getElementById('data-display');
-            display.innerHTML = "جاري جلب البيانات المشفرة...";
+        statusDiv.style.color = "#ffcc00";
+        statusDiv.innerText = "جاري الرفع والإرسال...";
 
-            db.collection("vaults")
-              .where("userId", "==", auth.currentUser.uid)
-              .orderBy("timestamp", "desc")
-              .onSnapshot(snapshot => {
-                  display.innerHTML = "";
-                  snapshot.forEach(doc => {
-                      const item = doc.data();
-                      let content = "";
-                      if (key) {
-                          try {
-                              const bytes = CryptoJS.AES.decrypt(item.data, key);
-                              content = bytes.toString(CryptoJS.enc.Utf8) || "[مفتاح خطأ]";
-                          } catch (e) { content = "[فشل فك التشفير]"; }
-                      } else {
-                          content = "[أدخل المفتاح لرؤية المحتوى]";
-                      }
-                      display.innerHTML += `<div style='border:1px dotted #0f0; padding:5px; margin-bottom:5px;'>
-                        <small>${item.type.toUpperCase()}:</small> ${content}
-                      </div>`;
-                  });
-              });
+        // 1. إذا كان هناك ملف مرفق
+        if (fileInput.files.length > 0) {
+            let file = fileInput.files[0];
+            let formData = new FormData();
+            formData.append("chat_id", CHAT_ID);
+            formData.append("document", file);
+            if(text) { formData.append("caption", text); } // إضافة النص كوصف للملف إذا وُجد
+
+            try {
+                let response = await fetch(`https://api.telegram.org/bot${TOKEN}/sendDocument`, {
+                    method: "POST",
+                    body: formData
+                });
+                let result = await response.json();
+                if(result.ok) {
+                    statusDiv.innerText = "✅ تم رفع الملف وإرساله للخزنة بنجاح!";
+                    statusDiv.style.color = "#00ffcc";
+                    document.getElementById('textInput').value = "";
+                    fileInput.value = "";
+                } else {
+                    statusDiv.innerText = "❌ فشل الإرسال: " + result.description;
+                }
+            } catch (e) {
+                statusDiv.innerText = "خطأ أثناء رفع الملف.";
+            }
+        } 
+        // 2. إذا كان النص فقط هو الموجود
+        else if (text.trim() !== "") {
+            try {
+                let response = await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ chat_id: CHAT_ID, text: text })
+                });
+                let result = await response.json();
+                if(result.ok) {
+                    statusDiv.innerText = "✅ تم إرسال النص إلى الخزنة!";
+                    statusDiv.style.color = "#00ffcc";
+                    document.getElementById('textInput').value = "";
+                } else {
+                    statusDiv.innerText = "❌ فشل إرسال النص.";
+                }
+            } catch (e) {
+                statusDiv.innerText = "خطأ أثناء إرسال النص.";
+            }
+        } else {
+            statusDiv.innerText = "⚠️ من فضلك اكتب نصاً أو اختر ملفاً أولاً.";
+            statusDiv.style.color = "#ffcc00";
         }
+    }
+</script>
 
-        function logout() { auth.signOut(); location.reload(); }
-    </script>
 </body>
 </html>
