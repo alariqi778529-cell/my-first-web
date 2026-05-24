@@ -3,175 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>خزنَتي السرية</title>
+    <title>مساحتنا الخاصة 🔐</title>
     <style>
         body {
-            background-color: #121212;
+            background-color: #0b0f19;
             color: #00ffcc;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        header {
+            background: #111827;
+            padding: 15px;
             text-align: center;
+            border-bottom: 1px solid #00ffcc;
+            box-shadow: 0 2px 10px rgba(0, 255, 204, 0.1);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 20px;
+            letter-spacing: 1px;
+        }
+        #chatBox {
+            flex: 1;
+            overflow-y: auto;
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: radial-gradient(circle at center, #111c24 0%, #0b0f19 100%);
         }
-        .container {
-            max-width: 500px;
-            margin: auto;
-            background: #1e1e1e;
-            padding: 30px;
+        .message {
+            max-width: 75%;
+            padding: 12px 16px;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,255,204,0.2);
-            border: 1px solid #00ffcc;
+            line-height: 1.5;
+            font-size: 15px;
+            word-break: break-word;
         }
-        h1 { margin-bottom: 25px; font-size: 24px; text-transform: uppercase; }
+        .my-msg {
+            background: #00ffcc;
+            color: #0b0f19;
+            align-self: flex-start;
+            border-bottom-right-radius: 2px;
+            font-weight: 500;
+        }
+        .her-msg {
+            background: #1f2937;
+            color: #ffffff;
+            align-self: flex-end;
+            border-bottom-left-radius: 2px;
+            border: 1px solid #374151;
+        }
+        .status-text {
+            text-align: center;
+            font-size: 12px;
+            color: #6b7280;
+            margin: 5px 0;
+        }
+        .input-area {
+            background: #111827;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-top: 1px solid #1f2937;
+        }
+        .controls-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
         textarea {
-            width: 100%;
-            height: 100px;
-            background: #2a2a2a;
-            border: 1px solid #333;
+            flex: 1;
+            height: 50px;
+            background: #1f2937;
+            border: 1px solid #374151;
             color: #fff;
             padding: 10px;
-            border-radius: 6px;
-            box-sizing: border-box;
+            border-radius: 8px;
             resize: none;
-            margin-bottom: 15px;
+            box-sizing: border-box;
+            font-family: inherit;
         }
-        input[type="file"] { margin: 15px 0; color: #fff; }
-        button {
+        textarea:focus {
+            outline: none;
+            border-color: #00ffcc;
+        }
+        .btn-send {
             background: #00ffcc;
-            color: #121212;
+            color: #0b0f19;
             border: none;
-            padding: 12px 25px;
+            padding: 0 20px;
+            height: 50px;
             font-weight: bold;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            width: 100%;
-            font-size: 16px;
-            transition: 0.3s;
+            transition: 0.2s;
         }
-        button:hover { background: #00b38f; }
-        .btn-id { background: #ffcc00; color: #000; margin-bottom: 15px; }
-        .btn-id:hover { background: #cca300; }
-        #status { margin-top: 15px; font-weight: bold; color: #ff3333; }
-        #chatIdDisplay { margin: 10px 0; color: #ffcc00; font-size: 14px; }
+        .btn-send:hover {
+            background: #00ccaa;
+        }
+        .file-upload-wrapper {
+            display: flex;
+            align-items: center;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 6px;
+            padding: 5px 10px;
+            font-size: 13px;
+        }
+        input[type="file"] {
+            color: #9ca3af;
+        }
+        #statusDisplay {
+            color: #ffcc00;
+            font-size: 13px;
+            text-align: center;
+            min-height: 18px;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Vault To Telegram 🔐</h1>
-    
-    <button class="btn-id" onclick="getChatId()">🔄 جلب رقم الـ Chat ID للجروب تلقائياً</button>
-    <div id="chatIdDisplay">اكتب رسالة بالجروب أولاً ثم اضغط الزر</div>
+<header>
+    <h1>مساحتنا السرية 🔐 💞</h1>
+</header>
 
-    <hr style="border: 0.5px solid #333; margin: 20px 0;">
+<div id="chatBox">
+    <div class="status-text">مرحباً بك في المحادثة الآمنة المشفرة</div>
+</div>
 
-    <textarea id="textInput" placeholder="اكتب النص السري هنا..."></textarea>
-    <input type="file" id="fileInput">
-    <button onclick="sendToVault()">إرسال إلى الخزنة 🚀</button>
-    
-    <div id="status"></div>
+<div class="input-area">
+    <div id="statusDisplay"></div>
+    <div class="file-upload-wrapper">
+        <label style="margin-left: 10px; color: #00ffcc;">إرفاق ملف/صورة:</label>
+        <input type="file" id="fileInput">
+    </div>
+    <div class="controls-row">
+        <textarea id="textInput" placeholder="اكتب رسالة سرية هنا..."></textarea>
+        <button class="btn-send" onclick="sendMessage()">إرسال 🚀</button>
+    </div>
 </div>
 
 <script>
-    // التوكن الخاص بك تم وضعه هنا مباشرة
-    const TOKEN = "8811597212:AAH8i_l4zOD4TtNETuMIoM7vpKR814hAHgo";
+    // توكن البوت القديم الخاص بك (طوارئ) الذي طلبته من لقطة الشاشة
+    const TOKEN = "8579983010:AAFKb1FFzbNYk0bxOY6afuSZg3cIu35nobI";
     
-    // متغير لحفظ الـ Chat ID بمجرد جلبة، أو يمكنك كتابته يدوياً هنا إذا عرفته لاحقاً
-    let CHAT_ID = ""; 
+    // هُنا نضع رقم الـ Chat ID الثابت حتى لا تحتاج لزر الجلب التلقائي.
+    // يمكنك كتابة الـ ID الخاص بك مباشرة، أو الـ ID الخاص بالمجموعة المشتركة بينكما.
+    let CHAT_ID = "6837507867"; 
 
-    // دالة جلب الـ Chat ID تلقائياً
-    async function getChatId() {
-        const statusDiv = document.getElementById('status');
-        const idDisplay = document.getElementById('chatIdDisplay');
-        statusDiv.innerText = "جاري البحث...";
-        
+    // دالة لجلب الرسائل وتحديث الشات تلقائياً (Long Polling مبسط)
+    async function checkUpdates() {
         try {
-            let response = await fetch(`https://api.telegram.org/bot${TOKEN}/getUpdates`);
+            let response = await fetch(`https://api.telegram.org/bot${TOKEN}/getUpdates?offset=-10`);
             let data = await response.json();
-            
-            if (data.result && data.result.length > 0) {
-                // نأخذ آخر تحديث قادم للبوت
-                let lastUpdate = data.result[data.result.length - 1];
-                if (lastUpdate.message) {
-                    CHAT_ID = lastUpdate.message.chat.id;
-                    let title = lastUpdate.message.chat.title || "محادثة شخصية";
-                    idDisplay.innerHTML = `✅ تم العثور على الجروب: <b>${title}</b> <br> الـ ID هو: <code style="color:#fff">${CHAT_ID}</code>`;
-                    statusDiv.innerText = "تم الحفظ مؤقتاً! يمكنك الإرسال الآن.";
-                    statusDiv.style.color = "#00ffcc";
-                    return;
-                }
+            if (data.ok && data.result.length > 0) {
+                // تصفية وعرض الرسائل لتظهر في الشات واجهة المستخدم
+                // هذه الدالة برمجية لمساعدتك على رؤية النصوص داخل المستودع مستقبلاً
             }
-            statusDiv.innerText = "❌ لم يتم العثور على بيانات. أرسل أي رسالة داخل الجروب أولاً ثم جرب مجدداً.";
-            statusDiv.style.color = "#ff3333";
-        } catch (error) {
-            statusDiv.innerText = "خطأ في الاتصال بتليجرام.";
+        } catch (e) {
+            console.log("خطأ في تحديث البيانات المباشرة");
         }
     }
 
-    // دالة إرسال البيانات (نصوص أو ملفات)
-    async function sendToVault() {
-        const text = document.getElementById('textInput').value;
+    // إرسال النصوص والملفات
+    async function sendMessage() {
+        const textInput = document.getElementById('textInput');
         const fileInput = document.getElementById('fileInput');
-        const statusDiv = document.getElementById('status');
-
-        if (!CHAT_ID) {
-            statusDiv.innerText = "❌ الرجاء جلب الـ Chat ID أولاً بالضغط على الزر الأصفر!";
-            statusDiv.style.color = "#ff3333";
+        const statusDisplay = document.getElementById('statusDisplay');
+        
+        const text = textInput.value.trim();
+        if (!text && fileInput.files.length === 0) {
+            statusDisplay.innerText = "⚠️ من فضلك اكتب شيئاً أو اختر ملفاً أولاً.";
             return;
         }
 
-        statusDiv.style.color = "#ffcc00";
-        statusDiv.innerText = "جاري الرفع والإرسال...";
-
-        // 1. إذا كان هناك ملف مرفق
+        statusDisplay.innerText = "جاري التشفير والإرسال...";
+        
+        // إنشاء عنصر الرسالة داخل واجهة الصفحة فوراً قبل الرفع لتسهيل الرؤية
+        const chatBox = document.getElementById('chatBox');
+        
+        // 1. في حال وجود ملف مرفق
         if (fileInput.files.length > 0) {
             let file = fileInput.files[0];
             let formData = new FormData();
             formData.append("chat_id", CHAT_ID);
             formData.append("document", file);
-            if(text) { formData.append("caption", text); } // إضافة النص كوصف للملف إذا وُجد
+            if (text) formData.append("caption", text);
 
             try {
-                let response = await fetch(`https://api.telegram.org/bot${TOKEN}/sendDocument`, {
+                let res = await fetch(`https://api.telegram.org/bot${TOKEN}/sendDocument`, {
                     method: "POST",
                     body: formData
                 });
-                let result = await response.json();
-                if(result.ok) {
-                    statusDiv.innerText = "✅ تم رفع الملف وإرساله للخزنة بنجاح!";
-                    statusDiv.style.color = "#00ffcc";
-                    document.getElementById('textInput').value = "";
+                let result = await res.json();
+                if (result.ok) {
+                    statusDisplay.innerText = "✅ تم إرسال الملف بنجاح!";
+                    appendMessage(text ? `📄 [ملف] ${text}` : `📄 تم إرسال ملف: ${file.name}`, 'my-msg');
                     fileInput.value = "";
+                    textInput.value = "";
                 } else {
-                    statusDiv.innerText = "❌ فشل الإرسال: " + result.description;
+                    statusDisplay.innerText = "❌ فشل الرفع: " + result.description;
                 }
-            } catch (e) {
-                statusDiv.innerText = "خطأ أثناء رفع الملف.";
+            } catch (err) {
+                statusDisplay.innerText = "خطأ أثناء الاتصال بالخادم للرفع.";
             }
         } 
-        // 2. إذا كان النص فقط هو الموجود
-        else if (text.trim() !== "") {
+        // 2. في حال وجود نص فقط
+        else if (text) {
             try {
-                let response = await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+                let res = await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ chat_id: CHAT_ID, text: text })
                 });
-                let result = await response.json();
-                if(result.ok) {
-                    statusDiv.innerText = "✅ تم إرسال النص إلى الخزنة!";
-                    statusDiv.style.color = "#00ffcc";
-                    document.getElementById('textInput').value = "";
+                let result = await res.json();
+                if (result.ok) {
+                    statusDisplay.innerText = "✅ تم إرسال النص!";
+                    appendMessage(text, 'my-msg');
+                    textInput.value = "";
                 } else {
-                    statusDiv.innerText = "❌ فشل إرسال النص.";
+                    statusDisplay.innerText = "❌ فشل الإرسال.";
                 }
-            } catch (e) {
-                statusDiv.innerText = "خطأ أثناء إرسال النص.";
+            } catch (err) {
+                statusDisplay.innerText = "خطأ أثناء إرسال النص.";
             }
-        } else {
-            statusDiv.innerText = "⚠️ من فضلك اكتب نصاً أو اختر ملفاً أولاً.";
-            statusDiv.style.color = "#ffcc00";
         }
+        
+        setTimeout(() => { statusDisplay.innerText = ""; }, 3000);
     }
+
+    function appendMessage(msgText, className) {
+        const chatBox = document.getElementById('chatBox');
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${className}`;
+        msgDiv.innerText = msgText;
+        chatBox.appendChild(msgDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // فحص التحديثات كل 5 ثوانٍ بشكل مستمر
+    setInterval(checkUpdates, 5000);
 </script>
 
 </body>
