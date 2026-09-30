@@ -1,1272 +1,1476 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width,
-                   initial-scale=1,
-                   maximum-scale=1,
-                   user-scalable=no,
-                   viewport-fit=cover">
+<meta name="viewport"
+      content="width=device-width,
+      initial-scale=1,
+      maximum-scale=1,
+      user-scalable=no">
 
-    <meta name="theme-color" content="#F47121">
+<title>دفع مشتريات وخدمات</title>
 
-    <title>دفع مشتريات وخدمات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <!-- الخط -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet">
 
-    <style>
+<style>
 
-        /* =====================================================
-           الإعدادات الأساسية
-        ===================================================== */
+/* =========================================================
+   الألوان الأساسية
+========================================================= */
 
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+:root {
+    --orange: #f87521;
+    --orange-border: #e97932;
 
-        html,
-        body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            min-height: 100%;
-            background: #F7F7F7;
-            font-family: "Tajawal", Arial, sans-serif;
-        }
+    --blue: #293f86;
+    --blue-dark: #263d85;
 
-        body {
-            overflow-x: hidden;
-        }
+    --light-border: #d9dce3;
 
-        button,
-        input,
-        textarea {
-            font-family: inherit;
-        }
+    --background: #f7f7f7;
 
-        button {
-            border: 0;
-            outline: none;
-        }
+    --placeholder: #8794b5;
+}
 
 
-        /* =====================================================
-           التطبيق
-        ===================================================== */
+/* =========================================================
+   الإعدادات
+========================================================= */
 
-        .app {
-            width: 100%;
-            max-width: 691px;
-            min-height: 100dvh;
-            margin: 0 auto;
-            background: #F7F7F7;
-            position: relative;
-        }
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
 
+html,
+body {
+    margin: 0;
+    padding: 0;
 
-        /* =====================================================
-           الهيدر البرتقالي
-        ===================================================== */
+    width: 100%;
+    min-height: 100%;
 
-        .top-header {
-            width: 100%;
-            height: 162px;
+    background: var(--background);
 
-            background: #F47121;
+    font-family: "Tajawal", Arial, sans-serif;
+}
 
-            color: white;
+body {
+    overflow-x: hidden;
+}
 
-            position: relative;
+button,
+input,
+textarea {
+    font-family: inherit;
+}
 
-            display: flex;
-            align-items: flex-end;
 
-            padding:
-                0
-                29px
-                22px
-                29px;
+/* =========================================================
+   التطبيق
+========================================================= */
 
-            padding-top: env(safe-area-inset-top);
+.app {
+    width: 100%;
+    max-width: 691px;
 
-            box-shadow: none;
-        }
+    min-height: 100vh;
+    min-height: 100dvh;
 
+    margin: auto;
 
-        .header-content {
-            width: 100%;
+    background: var(--background);
 
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+    position: relative;
+}
 
-            direction: rtl;
-        }
 
+/* =========================================================
+   الهيدر
+========================================================= */
 
-        /* عنوان الهيدر */
+.header {
+    height: 162px;
 
-        .header-title {
-            display: flex;
-            align-items: center;
-            gap: 28px;
+    background: var(--orange);
 
-            flex: 1;
-        }
+    position: relative;
 
+    color: white;
+}
 
-        .header-title h1 {
-            margin: 0;
 
-            color: #FFFFFF;
+/* =========================================================
+   العنوان
+========================================================= */
 
-            font-size: 28px;
-            line-height: 1;
+.header-title {
+    position: absolute;
 
-            font-weight: 800;
+    top: 94px;
+    right: 190px;
 
-            white-space: nowrap;
-        }
+    color: white;
 
+    font-size: 27px;
+    font-weight: 800;
 
-        /* الصورة الدائرية */
+    line-height: 1;
 
-        .profile {
-            width: 52px;
-            height: 52px;
+    white-space: nowrap;
+}
 
-            border-radius: 50%;
 
-            overflow: hidden;
+/* =========================================================
+   صورة الحساب
+========================================================= */
 
-            flex-shrink: 0;
+.profile {
+    position: absolute;
 
-            background: #ddd;
+    top: 82px;
+    right: 105px;
 
-            border: 2px solid rgba(255,255,255,.25);
-        }
+    width: 53px;
+    height: 53px;
 
+    border-radius: 50%;
 
-        .profile img {
-            width: 100%;
-            height: 100%;
+    overflow: hidden;
 
-            object-fit: cover;
-        }
+    border: 2px solid rgba(255,255,255,.25);
 
+    background: #35538b;
+}
 
-        /* سهم الرجوع */
 
-        .back-arrow {
-            width: 43px;
-            height: 43px;
+/*
+   صورة شخصية مرسومة داخل SVG
+*/
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+.profile svg {
+    width: 100%;
+    height: 100%;
 
-            color: white;
+    display: block;
+}
 
-            flex-shrink: 0;
-        }
 
+/* =========================================================
+   السهم العلوي
+========================================================= */
 
-        .back-arrow svg {
-            width: 34px;
-            height: 34px;
+.top-arrow {
+    position: absolute;
 
-            stroke: white;
-            stroke-width: 2.6;
+    top: 91px;
+    right: 27px;
 
-            fill: none;
-        }
+    width: 48px;
+    height: 48px;
 
+    display: flex;
 
-        /* علامة الاستفهام */
+    align-items: center;
+    justify-content: center;
+}
 
-        .help-button {
-            position: absolute;
 
-            left: 27px;
-            bottom: 27px;
+.top-arrow svg {
+    width: 40px;
+    height: 40px;
 
-            width: 35px;
-            height: 35px;
+    fill: none;
 
-            border: 4px solid white;
-            border-radius: 50%;
+    stroke: white;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+    stroke-width: 2.8;
 
-            color: white;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
 
-            font-size: 23px;
-            font-weight: 800;
 
-            line-height: 1;
-        }
+/* =========================================================
+   علامة الاستفهام
+========================================================= */
 
+.help {
+    position: absolute;
 
-        /* =====================================================
-           المحتوى
-        ===================================================== */
+    top: 91px;
+    left: 27px;
 
-        .content {
-            padding: 43px 44px 35px;
-        }
+    width: 36px;
+    height: 36px;
 
+    border: 4px solid white;
 
-        /* =====================================================
-           العناوين
-        ===================================================== */
+    border-radius: 50%;
 
-        .section-title {
-            margin: 0 0 27px;
+    display: flex;
 
-            color: #243A85;
+    align-items: center;
+    justify-content: center;
 
-            font-size: 31px;
-            line-height: 1.2;
+    color: white;
 
-            font-weight: 800;
+    font-size: 23px;
+    font-weight: 800;
 
-            text-align: right;
-        }
+    line-height: 1;
+}
 
 
-        /* =====================================================
-           رقم نقطة الدفع
-        ===================================================== */
+/* =========================================================
+   المحتوى
+========================================================= */
 
-        .payment-point-row {
-            display: flex;
-            gap: 14px;
+.content {
+    padding:
 
-            width: 100%;
+        48px
+        44px
+        40px;
+}
 
-            direction: ltr;
-        }
 
+/* =========================================================
+   عنوان رقم نقطة الدفع
+========================================================= */
 
-        /* زر QR */
+.point-title {
 
-        .qr-button {
-            width: 87px;
-            height: 95px;
+    margin: 0 0 28px;
 
-            background: #FFFFFF;
+    color: var(--blue);
 
-            border: 2px solid #D8DCE5;
+    font-size: 31px;
 
-            border-radius: 15px;
+    font-weight: 800;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+    line-height: 1.2;
 
-            flex-shrink: 0;
-        }
+    text-align: right;
+}
 
 
-        .qr-button svg {
-            width: 36px;
-            height: 36px;
+/* =========================================================
+   صف نقطة الدفع
+========================================================= */
 
-            stroke: #F47121;
-            fill: none;
+.point-row {
 
-            stroke-width: 2;
-        }
+    display: flex;
 
+    flex-direction: row-reverse;
 
-        /* حقل نقطة الدفع */
+    gap: 14px;
 
-        .point-input-wrapper {
-            height: 95px;
+    width: 100%;
+}
 
-            flex: 1;
 
-            position: relative;
+/* =========================================================
+   QR
+========================================================= */
 
-            background: #FFFFFF;
+.qr {
 
-            border: 2px solid #F47121;
+    width: 87px;
+    height: 95px;
 
-            border-radius: 15px;
+    flex-shrink: 0;
 
-            display: flex;
-            align-items: center;
+    background: white;
 
-            direction: ltr;
-        }
+    border: 2px solid var(--light-border);
 
+    border-radius: 15px;
 
-        .person-icon {
-            width: 48px;
-            height: 48px;
+    display: flex;
 
-            margin-left: 30px;
+    align-items: center;
+    justify-content: center;
+}
 
-            flex-shrink: 0;
-        }
 
+/* QR SVG */
 
-        .person-icon svg {
-            width: 100%;
-            height: 100%;
+.qr svg {
 
-            fill: #243A85;
-        }
+    width: 39px;
+    height: 39px;
 
+    stroke: var(--orange-border);
 
-        #paymentPoint {
-            width: 100%;
-            height: 100%;
+    fill: none;
 
-            border: none;
-            outline: none;
+    stroke-width: 2.2;
 
-            background: transparent;
+    stroke-linecap: round;
+}
 
-            color: #243A85;
 
-            font-size: 35px;
-            font-weight: 700;
+/* =========================================================
+   حقل رقم نقطة الدفع
+========================================================= */
 
-            text-align: right;
+.point-field {
 
-            padding:
-                0
-                24px
-                0
-                12px;
+    flex: 1;
 
-            direction: ltr;
-        }
+    height: 95px;
 
+    background: white;
 
-        #paymentPoint::placeholder {
-            color: transparent;
-        }
+    border: 2px solid var(--blue);
 
+    border-radius: 15px;
 
-        /* =====================================================
-           المفضلة
-        ===================================================== */
+    display: flex;
 
-        .favorite {
-            margin-top: 32px;
+    align-items: center;
 
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
+    position: relative;
 
-            gap: 10px;
+    overflow: hidden;
+}
 
-            color: #4A5B8B;
 
-            font-size: 25px;
-            font-weight: 700;
+/* =========================================================
+   أيقونة الشخص
+========================================================= */
 
-            text-decoration: underline;
+.person {
 
-            text-decoration-thickness: 1px;
+    width: 51px;
+    height: 51px;
 
-            cursor: pointer;
-        }
+    margin-right: 30px;
 
+    flex-shrink: 0;
+}
 
-        .favorite-star {
-            color: #F4B900;
 
-            font-size: 33px;
+.person svg {
 
-            line-height: 1;
-        }
+    width: 100%;
+    height: 100%;
 
+    fill: var(--blue);
+}
 
-        /* =====================================================
-           عنوان مبلغ العملية
-        ===================================================== */
 
-        .amount-title {
-            margin-top: 57px;
-            margin-bottom: 35px;
+/* =========================================================
+   رقم نقطة الدفع
+========================================================= */
 
-            color: #243A85;
+#pointNumber {
 
-            font-size: 31px;
-            font-weight: 800;
+    position: absolute;
 
-            text-align: right;
-        }
+    right: 28px;
 
+    top: 50%;
 
-        /* =====================================================
-           المبلغ + العملة
-        ===================================================== */
+    transform: translateY(-50%);
 
-        .amount-row {
-            width: 100%;
+    width: calc(100% - 100px);
 
-            display: flex;
-            gap: 14px;
+    border: 0;
 
-            direction: ltr;
-        }
+    outline: none;
 
+    background: transparent;
 
-        .amount-box {
-            height: 106px;
+    color: var(--blue);
 
-            flex: 1;
+    font-size: 34px;
 
-            background: #FFFFFF;
+    font-weight: 700;
 
-            border: 2px solid #D8DCE5;
+    text-align: right;
 
-            border-radius: 15px;
+    direction: ltr;
 
-            display: flex;
-            align-items: center;
+    padding: 0;
+}
 
-            transition:
-                border-color .15s ease,
-                box-shadow .15s ease;
-        }
 
+/* =========================================================
+   المفضلة
+========================================================= */
 
-        .amount-box.active {
-            border-color: #F47121;
-        }
+.favorite {
 
+    margin-top: 31px;
 
-        #amount {
-            width: 100%;
-            height: 100%;
+    display: flex;
 
-            background: transparent;
+    align-items: center;
 
-            border: 0;
-            outline: none;
+    justify-content: flex-start;
 
-            color: #243A85;
+    gap: 9px;
 
-            font-size: 37px;
+    color: #52638f;
 
-            font-weight: 700;
+    font-size: 25px;
 
-            text-align: right;
+    font-weight: 700;
 
-            direction: ltr;
+    text-decoration: underline;
 
-            padding: 0 25px;
-        }
+    cursor: pointer;
+}
 
 
-        #amount::placeholder {
-            color: #8B98BA;
+.favorite-star {
 
-            font-size: 35px;
+    color: #f5b800;
 
-            font-weight: 500;
+    font-size: 33px;
 
-            opacity: 1;
-        }
+    line-height: 1;
 
+    text-decoration: none;
+}
 
-        /* العملة */
 
-        .currency-button {
-            width: 162px;
-            height: 106px;
+/* =========================================================
+   عنوان المبلغ
+========================================================= */
 
-            background: #FFFFFF;
+.amount-title {
 
-            border: 2px solid #D8DCE5;
+    margin:
 
-            border-radius: 15px;
+        56px
+        0
+        35px;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+    color: var(--blue);
 
-            gap: 25px;
+    font-size: 31px;
 
-            color: #243A85;
+    font-weight: 800;
 
-            font-size: 25px;
+    line-height: 1.2;
 
-            font-weight: 800;
+    text-align: right;
+}
 
-            direction: rtl;
 
-            cursor: pointer;
-        }
+/* =========================================================
+   صف المبلغ
+========================================================= */
 
+.amount-row {
 
-        .currency-arrow {
-            width: 20px;
-            height: 20px;
+    width: 100%;
 
-            border-left: 5px solid #243A85;
-            border-bottom: 5px solid #243A85;
+    display: flex;
 
-            transform: rotate(-45deg);
+    flex-direction: row;
 
-            margin-top: -8px;
-        }
+    gap: 14px;
+}
 
 
-        /* =====================================================
-           النص أسفل المبلغ
-        ===================================================== */
+/* =========================================================
+   حقل المبلغ
+========================================================= */
 
-        .amount-word {
-            min-height: 45px;
+.amount-field {
 
-            margin-top: 9px;
+    flex: 1;
 
-            color: #243A85;
+    height: 106px;
 
-            font-size: 24px;
+    background: white;
 
-            font-weight: 700;
+    border: 2px solid var(--orange-border);
 
-            text-align: right;
+    border-radius: 15px;
 
-            padding-right: 0;
+    position: relative;
 
-            transition: opacity .15s ease;
-        }
+    display: flex;
 
+    align-items: center;
+}
 
-        /* =====================================================
-           الرصيد
-        ===================================================== */
 
-        .balance {
-            margin-top: 16px;
+/* =========================================================
+   إدخال المبلغ
+========================================================= */
 
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
+#amount {
 
-            gap: 7px;
+    width: 100%;
+    height: 100%;
 
-            color: #243A85;
+    border: 0;
+    outline: 0;
 
-            font-size: 25px;
+    background: transparent;
 
-            font-weight: 700;
-        }
+    color: var(--blue);
 
+    font-size: 37px;
 
-        .balance-icon {
-            width: 39px;
-            height: 39px;
+    font-weight: 700;
 
-            border-radius: 50%;
+    text-align: right;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    direction: ltr;
 
+    padding:
 
-        .balance-icon svg {
-            width: 39px;
-            height: 39px;
-        }
+        0
+        25px;
+}
 
 
-        /* =====================================================
-           الملاحظة
-        ===================================================== */
+#amount::placeholder {
 
-        .note-title {
-            margin-top: 43px;
-            margin-bottom: 20px;
+    color: var(--placeholder);
 
-            color: #243A85;
+    font-size: 34px;
 
-            font-size: 27px;
+    font-weight: 500;
 
-            font-weight: 800;
+    opacity: 1;
+}
 
-            text-align: right;
-        }
 
+/* =========================================================
+   العملة
+========================================================= */
 
-        .note-box {
-            width: 100%;
-            height: 122px;
+.currency {
 
-            position: relative;
+    width: 162px;
+    height: 106px;
 
-            background: #FFFFFF;
+    flex-shrink: 0;
 
-            border: 2px solid #D8DCE5;
+    background: white;
 
-            border-radius: 15px;
-        }
+    border: 2px solid var(--light-border);
 
+    border-radius: 15px;
 
-        #note {
-            width: 100%;
-            height: 100%;
+    color: var(--blue);
 
-            resize: none;
+    font-size: 25px;
 
-            border: 0;
-            outline: 0;
+    font-weight: 800;
 
-            background: transparent;
+    display: flex;
 
-            color: #243A85;
+    align-items: center;
 
-            font-size: 25px;
+    justify-content: center;
 
-            font-weight: 500;
+    gap: 26px;
 
-            text-align: right;
+    cursor: pointer;
+}
 
-            padding:
-                22px
-                20px
-                38px;
 
-            direction: rtl;
-        }
+/* سهم العملة */
 
+.currency-arrow {
 
-        #note::placeholder {
-            color: #8B98BA;
+    width: 19px;
+    height: 19px;
 
-            opacity: 1;
-        }
+    border-left: 5px solid var(--blue);
+    border-bottom: 5px solid var(--blue);
 
+    transform: rotate(-45deg);
 
-        .counter {
-            position: absolute;
+    margin-top: -8px;
+}
 
-            bottom: 17px;
-            left: 15px;
 
-            color: #687AA5;
+/* =========================================================
+   الكتابة العربية للمبلغ
+========================================================= */
 
-            font-size: 20px;
+.amount-text {
 
-            font-weight: 500;
+    min-height: 42px;
 
-            direction: ltr;
-        }
+    margin-top: 9px;
 
+    color: var(--blue);
 
-        /* =====================================================
-           زر التالي
-        ===================================================== */
+    font-size: 24px;
 
-        .next-button {
-            width: calc(100% - 65px);
+    font-weight: 700;
 
-            height: 108px;
+    text-align: right;
 
-            margin:
-                294px
-                auto
-                0;
+    line-height: 1.4;
+}
 
-            border-radius: 20px;
 
-            background: #8C98BE;
+/* =========================================================
+   الرصيد
+========================================================= */
 
-            color: white;
+.balance {
 
-            font-size: 34px;
+    margin-top: 12px;
 
-            font-weight: 800;
+    display: flex;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+    align-items: center;
 
-            cursor: not-allowed;
+    justify-content: flex-start;
 
-            transition:
-                background .2s ease,
-                transform .1s ease,
-                box-shadow .2s ease;
-        }
+    gap: 7px;
 
+    color: var(--blue);
 
-        .next-button.active {
-            background: #243A85;
+    font-size: 25px;
 
-            cursor: pointer;
+    font-weight: 700;
+}
 
-            box-shadow:
-                0 5px 10px rgba(36,58,133,.18);
-        }
 
+/* =========================================================
+   أيقونة العين/الرصيد
+========================================================= */
 
-        .next-button.active:active {
-            transform: scale(.985);
-        }
+.balance-eye {
 
+    width: 43px;
+    height: 43px;
 
-        /* =====================================================
-           قائمة العملات
-        ===================================================== */
+    flex-shrink: 0;
 
-        .currency-menu {
-            position: fixed;
+    display: flex;
 
-            z-index: 100;
+    align-items: center;
+    justify-content: center;
+}
 
-            inset: 0;
 
-            display: none;
+.balance-eye svg {
 
-            align-items: flex-end;
+    width: 43px;
+    height: 43px;
 
-            justify-content: center;
+    display: block;
+}
 
-            background: rgba(0,0,0,.25);
-        }
 
+/* =========================================================
+   عنوان الملاحظة
+========================================================= */
 
-        .currency-menu.show {
-            display: flex;
-        }
+.note-title {
 
+    margin:
 
-        .currency-panel {
-            width: min(691px, 100%);
+        40px
+        0
+        20px;
 
-            background: white;
+    color: var(--blue);
 
-            border-radius:
-                25px
-                25px
-                0
-                0;
+    font-size: 27px;
 
-            padding: 25px;
+    font-weight: 800;
 
-            box-shadow:
-                0 -5px 30px rgba(0,0,0,.12);
-        }
+    text-align: right;
+}
 
 
-        .currency-panel h3 {
-            margin: 0 0 20px;
+/* =========================================================
+   صندوق الملاحظة
+========================================================= */
 
-            color: #243A85;
+.note {
 
-            font-size: 25px;
+    height: 122px;
 
-            text-align: center;
-        }
+    width: 100%;
 
+    position: relative;
 
-        .currency-option {
-            width: 100%;
+    background: white;
 
-            height: 65px;
+    border: 2px solid var(--light-border);
 
-            background: #F7F7F7;
+    border-radius: 15px;
+}
 
-            border-radius: 12px;
 
-            margin-top: 10px;
+/* =========================================================
+   النص
+========================================================= */
 
-            color: #243A85;
+#note {
 
-            font-size: 22px;
+    width: 100%;
+    height: 100%;
 
-            font-weight: 700;
+    resize: none;
 
-            cursor: pointer;
-        }
+    border: 0;
+    outline: 0;
 
+    background: transparent;
 
-        /* =====================================================
-           استجابة الشاشات الصغيرة
-        ===================================================== */
+    color: var(--blue);
 
-        @media (max-width: 600px) {
+    font-size: 25px;
 
-            .top-header {
-                height: 145px;
+    font-weight: 500;
 
-                padding-left: 22px;
-                padding-right: 22px;
-                padding-bottom: 19px;
-            }
+    text-align: right;
 
+    direction: rtl;
 
-            .header-title {
-                gap: 16px;
-            }
+    padding:
 
+        21px
+        20px
+        38px;
+}
 
-            .header-title h1 {
-                font-size: 22px;
-            }
 
+#note::placeholder {
 
-            .profile {
-                width: 45px;
-                height: 45px;
-            }
+    color: var(--placeholder);
 
+    opacity: 1;
+}
 
-            .content {
-                padding:
-                    38px
-                    24px
-                    30px;
-            }
 
+/* =========================================================
+   العداد
+========================================================= */
 
-            .section-title,
-            .amount-title {
-                font-size: 27px;
-            }
+.counter {
 
+    position: absolute;
 
-            .payment-point-row {
-                gap: 10px;
-            }
+    left: 15px;
+    bottom: 17px;
 
+    color: #6c7ca4;
 
-            .qr-button {
-                width: 78px;
-                height: 88px;
-            }
+    font-size: 20px;
 
+    font-weight: 500;
 
-            .point-input-wrapper {
-                height: 88px;
-            }
+    direction: ltr;
+}
 
 
-            #paymentPoint {
-                font-size: 30px;
-            }
+/* =========================================================
+   زر التالي
+========================================================= */
 
+.next {
 
-            .person-icon {
-                margin-left: 17px;
-            }
+    width: calc(100% - 65px);
 
+    height: 108px;
 
-            .amount-row {
-                gap: 10px;
-            }
+    margin:
 
+        294px
+        auto
+        0;
 
-            .currency-button {
-                width: 135px;
-                font-size: 22px;
-                gap: 17px;
-            }
+    border-radius: 20px;
 
+    border: 0;
 
-            .amount-box,
-            .currency-button {
-                height: 95px;
-            }
+    background: #293f86;
 
+    color: white;
 
-            #amount {
-                font-size: 32px;
-            }
+    font-size: 34px;
 
+    font-weight: 800;
 
-            #amount::placeholder {
-                font-size: 29px;
-            }
+    display: flex;
 
+    align-items: center;
+    justify-content: center;
 
-            .amount-word {
-                font-size: 21px;
-            }
+    box-shadow:
 
+        0
+        5px
+        10px
+        rgba(0,0,0,.12);
 
-            .balance {
-                font-size: 22px;
-            }
+    cursor: pointer;
+}
 
 
-            .note-title {
-                font-size: 24px;
-            }
+/* =========================================================
+   قائمة العملات
+========================================================= */
 
+.currency-menu {
 
-            .next-button {
-                width: calc(100% - 40px);
+    position: fixed;
 
-                height: 92px;
+    inset: 0;
 
-                margin-top: 250px;
+    z-index: 1000;
 
-                font-size: 30px;
-            }
-        }
+    background: rgba(0,0,0,.28);
 
+    display: none;
 
-        @media (max-width: 390px) {
+    align-items: flex-end;
 
-            .content {
-                padding-left: 18px;
-                padding-right: 18px;
-            }
+    justify-content: center;
+}
 
 
-            .currency-button {
-                width: 120px;
-            }
+.currency-menu.show {
 
+    display: flex;
+}
 
-            .next-button {
-                width: calc(100% - 20px);
-            }
-        }
 
-    </style>
+.currency-panel {
+
+    width: min(691px,100%);
+
+    background: white;
+
+    border-radius:
+
+        25px
+        25px
+        0
+        0;
+
+    padding: 25px;
+}
+
+
+.currency-panel h3 {
+
+    margin: 0 0 20px;
+
+    text-align: center;
+
+    color: var(--blue);
+
+    font-size: 25px;
+}
+
+
+.currency-option {
+
+    width: 100%;
+
+    height: 62px;
+
+    margin-top: 10px;
+
+    border: 0;
+
+    border-radius: 12px;
+
+    background: #f4f5f7;
+
+    color: var(--blue);
+
+    font-size: 21px;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   الهواتف
+========================================================= */
+
+@media(max-width:600px) {
+
+    .header {
+        height: 145px;
+    }
+
+
+    .header-title {
+
+        top: 84px;
+        right: 145px;
+
+        font-size: 21px;
+    }
+
+
+    .profile {
+
+        top: 73px;
+        right: 78px;
+
+        width: 48px;
+        height: 48px;
+    }
+
+
+    .top-arrow {
+
+        top: 79px;
+        right: 16px;
+    }
+
+
+    .help {
+
+        top: 79px;
+        left: 22px;
+    }
+
+
+    .content {
+
+        padding:
+
+            38px
+            24px
+            30px;
+    }
+
+
+    .point-title,
+    .amount-title {
+
+        font-size: 27px;
+    }
+
+
+    .point-row {
+
+        gap: 10px;
+    }
+
+
+    .qr {
+
+        width: 78px;
+        height: 88px;
+    }
+
+
+    .point-field {
+
+        height: 88px;
+    }
+
+
+    #pointNumber {
+
+        font-size: 29px;
+
+        right: 19px;
+    }
+
+
+    .person {
+
+        width: 45px;
+        height: 45px;
+
+        margin-right: 16px;
+    }
+
+
+    .amount-row {
+
+        gap: 10px;
+    }
+
+
+    .amount-field,
+    .currency {
+
+        height: 95px;
+    }
+
+
+    .currency {
+
+        width: 135px;
+
+        font-size: 22px;
+
+        gap: 17px;
+    }
+
+
+    #amount {
+
+        font-size: 31px;
+    }
+
+
+    #amount::placeholder {
+
+        font-size: 28px;
+    }
+
+
+    .amount-text {
+
+        font-size: 21px;
+    }
+
+
+    .balance {
+
+        font-size: 22px;
+    }
+
+
+    .note-title {
+
+        font-size: 24px;
+    }
+
+
+    .next {
+
+        width: calc(100% - 40px);
+
+        height: 92px;
+
+        margin-top: 250px;
+
+        font-size: 30px;
+    }
+}
+
+
+@media(max-width:390px) {
+
+    .content {
+
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+
+    .currency {
+
+        width: 120px;
+    }
+
+
+    .next {
+
+        width: calc(100% - 20px);
+    }
+}
+
+</style>
 </head>
 
 
 <body>
 
+
 <div class="app">
 
-    <!-- =====================================================
-         الهيدر
-    ====================================================== -->
 
-    <header class="top-header">
+<!-- =====================================================
+     الهيدر
+===================================================== -->
 
-        <div class="header-content">
-
-            <div class="header-title">
-
-                <div class="profile">
-
-                    <!-- صورة افتراضية -->
-                    <svg viewBox="0 0 100 100"
-                         xmlns="http://www.w3.org/2000/svg">
-
-                        <rect width="100"
-                              height="100"
-                              fill="#31518F"/>
-
-                        <circle cx="50"
-                                cy="35"
-                                r="18"
-                                fill="#D8A678"/>
-
-                        <path d="M25 92
-                                 C27 67 38 57 50 57
-                                 C62 57 73 67 75 92Z"
-                              fill="#222B40"/>
-
-                        <path d="M30 36
-                                 C31 18 41 8 54 10
-                                 C68 11 73 24 70 39
-                                 C64 29 55 25 43 27
-                                 C39 33 34 36 30 36Z"
-                              fill="#1C2330"/>
-
-                    </svg>
-
-                </div>
-
-                <h1>دفع مشتريات وخدمات</h1>
-
-            </div>
+<header class="header">
 
 
-            <!-- سهم الرجوع -->
+    <!-- علامة الاستفهام -->
 
-            <div class="back-arrow">
-
-                <svg viewBox="0 0 40 40">
-
-                    <path d="M7 20H32"></path>
-
-                    <path d="M22 9L33 20L22 31"></path>
-
-                </svg>
-
-            </div>
-
-        </div>
+    <div class="help">؟</div>
 
 
-        <div class="help-button">؟</div>
+    <!-- صورة الحساب -->
 
-    </header>
+    <div class="profile">
+
+        <svg viewBox="0 0 100 100">
+
+            <rect
+                width="100"
+                height="100"
+                fill="#31528b"
+            />
+
+            <circle
+                cx="50"
+                cy="35"
+                r="18"
+                fill="#d5a175"
+            />
+
+            <path
+                d="M25 94
+                   C27 67 39 56 50 56
+                   C62 56 73 67 75 94Z"
+                fill="#252c3d"
+            />
+
+            <path
+                d="M29 37
+                   C30 18 42 8 55 10
+                   C68 12 74 24 70 40
+                   C63 29 55 25 43 27
+                   C39 33 34 36 29 37Z"
+                fill="#1d2330"
+            />
+
+        </svg>
+
+    </div>
+
+
+    <!-- العنوان -->
+
+    <div class="header-title">
+        دفع مشتريات وخدمات
+    </div>
+
+
+    <!-- السهم -->
+
+    <div class="top-arrow">
+
+        <svg viewBox="0 0 40 40">
+
+            <path d="M7 20H32"/>
+
+            <path d="M22 9L33 20L22 31"/>
+
+        </svg>
+
+    </div>
+
+
+</header>
 
 
 
-    <!-- =====================================================
-         المحتوى
-    ====================================================== -->
+<!-- =====================================================
+     المحتوى
+===================================================== -->
 
-    <main class="content">
+<main class="content">
+
+
+    <!-- رقم نقطة الدفع -->
+
+    <h2 class="point-title">
+        أدخل رقم نقطة الدفع
+    </h2>
+
+
+    <div class="point-row">
+
+
+        <!-- QR -->
+
+        <button class="qr">
+
+            <svg viewBox="0 0 40 40">
+
+                <rect
+                    x="4"
+                    y="4"
+                    width="12"
+                    height="12"
+                    rx="1"
+                />
+
+                <rect
+                    x="24"
+                    y="4"
+                    width="12"
+                    height="12"
+                    rx="1"
+                />
+
+                <rect
+                    x="4"
+                    y="24"
+                    width="12"
+                    height="12"
+                    rx="1"
+                />
+
+                <path d="M24 24H29V29H24Z"/>
+
+                <path d="M32 24V28H36"/>
+
+                <path d="M24 33H28"/>
+
+                <path d="M33 32V36"/>
+
+            </svg>
+
+        </button>
 
 
         <!-- رقم نقطة الدفع -->
 
-        <h2 class="section-title">
-            أدخل رقم نقطة الدفع
-        </h2>
+        <div class="point-field">
 
 
-        <div class="payment-point-row">
+            <div class="person">
 
+                <svg viewBox="0 0 64 64">
 
-            <!-- QR -->
+                    <circle
+                        cx="32"
+                        cy="20"
+                        r="13"
+                    />
 
-            <button class="qr-button"
-                    type="button"
-                    aria-label="QR">
-
-                <svg viewBox="0 0 40 40">
-
-                    <rect x="4"
-                          y="4"
-                          width="11"
-                          height="11"
-                          rx="1"></rect>
-
-                    <rect x="25"
-                          y="4"
-                          width="11"
-                          height="11"
-                          rx="1"></rect>
-
-                    <rect x="4"
-                          y="25"
-                          width="11"
-                          height="11"
-                          rx="1"></rect>
-
-                    <path d="M25 25H29V29H25Z"></path>
-
-                    <path d="M32 25V29H36"></path>
-
-                    <path d="M25 33H29"></path>
-
-                    <path d="M32 32V36"></path>
+                    <path
+                        d="M10 57
+                           C11 42 20 34 32 34
+                           C44 34 53 42 54 57Z"
+                    />
 
                 </svg>
 
-            </button>
-
-
-            <!-- رقم نقطة الدفع -->
-
-            <div class="point-input-wrapper">
-
-                <div class="person-icon">
-
-                    <svg viewBox="0 0 64 64">
-
-                        <circle cx="32"
-                                cy="20"
-                                r="13"></circle>
-
-                        <path d="M10 57
-                                 C11 42 20 34 32 34
-                                 C44 34 53 42 54 57Z"></path>
-
-                    </svg>
-
-                </div>
-
-
-                <input
-                    id="paymentPoint"
-                    type="text"
-                    inputmode="numeric"
-                    maxlength="12"
-                    autocomplete="off"
-                    aria-label="رقم نقطة الدفع"
-                >
-
-            </div>
-
-        </div>
-
-
-        <!-- المفضلة -->
-
-        <div class="favorite">
-
-            <span class="favorite-star">★</span>
-
-            <span>اختر من المفضلة</span>
-
-        </div>
-
-
-
-        <!-- مبلغ العملية -->
-
-        <h2 class="amount-title">
-            مبلغ العملية
-        </h2>
-
-
-        <div class="amount-row">
-
-
-            <!-- المبلغ -->
-
-            <div class="amount-box"
-                 id="amountBox">
-
-                <input
-                    id="amount"
-                    type="text"
-                    inputmode="decimal"
-                    autocomplete="off"
-                    placeholder="أدخل المبلغ"
-                    aria-label="المبلغ"
-                >
-
             </div>
 
 
-            <!-- العملة -->
-
-            <button
-                class="currency-button"
-                id="currencyButton"
-                type="button"
+            <input
+                id="pointNumber"
+                type="text"
+                inputmode="numeric"
+                maxlength="12"
+                autocomplete="off"
             >
 
-                <span id="currencyText">
-                    ر.ي
-                </span>
+        </div>
 
-                <span class="currency-arrow"></span>
 
-            </button>
+    </div>
+
+
+    <!-- المفضلة -->
+
+    <div class="favorite">
+
+        <span class="favorite-star">
+            ★
+        </span>
+
+        <span>
+            اختر من المفضلة
+        </span>
+
+    </div>
+
+
+
+    <!-- مبلغ العملية -->
+
+    <h2 class="amount-title">
+        مبلغ العملية
+    </h2>
+
+
+    <!-- المبلغ والعملة -->
+
+    <div class="amount-row">
+
+
+        <!-- حقل المبلغ -->
+
+        <div class="amount-field">
+
+            <input
+                id="amount"
+                type="text"
+                inputmode="numeric"
+                placeholder="أدخل المبلغ"
+                autocomplete="off"
+            >
 
         </div>
 
 
-        <!-- كتابة المبلغ -->
-
-        <div
-            class="amount-word"
-            id="amountWord"
-        ></div>
-
-
-        <!-- الرصيد -->
-
-        <div class="balance">
-
-            <div class="balance-icon">
-
-                <svg viewBox="0 0 50 50">
-
-                    <circle cx="25"
-                            cy="25"
-                            r="22"
-                            fill="none"
-                            stroke="#243A85"
-                            stroke-width="2"/>
-
-                    <circle cx="25"
-                            cy="25"
-                            r="17"
-                            fill="#F47121"/>
-
-                    <path d="M18 30
-                             L32 18
-                             M20 20
-                             H30
-                             V30"
-                          fill="none"
-                          stroke="white"
-                          stroke-width="3"
-                          stroke-linecap="round"/>
-
-                </svg>
-
-            </div>
-
-            <span>
-                رصيدي
-            </span>
-
-            <span>
-                ****** ر.ي
-            </span>
-
-        </div>
-
-
-
-        <!-- الملاحظة -->
-
-        <h3 class="note-title">
-            ملاحظة (اختياري)
-        </h3>
-
-
-        <div class="note-box">
-
-            <textarea
-                id="note"
-                maxlength="30"
-                placeholder="أضف ملاحظة هنا..."
-            ></textarea>
-
-            <div class="counter">
-                <span id="counter">0</span>/30
-            </div>
-
-        </div>
-
-
-
-        <!-- التالي -->
+        <!-- العملة -->
 
         <button
-            id="nextButton"
-            class="next-button"
-            type="button"
-            disabled
+            class="currency"
+            id="currencyButton"
         >
-            التالي
+
+            <span id="currencyText">
+                ر.ي
+            </span>
+
+            <span class="currency-arrow"></span>
+
         </button>
 
 
-    </main>
+    </div>
+
+
+    <!-- المبلغ كتابة -->
+
+    <div
+        class="amount-text"
+        id="amountText"
+    ></div>
+
+
+    <!-- =================================================
+         الرصيد
+    ================================================== -->
+
+    <div class="balance">
+
+
+        <div class="balance-eye">
+
+            <!-- أيقونة مطابقة لفكرة أيقونة الرصيد في الصورة -->
+
+            <svg viewBox="0 0 50 50">
+
+                <circle
+                    cx="25"
+                    cy="25"
+                    r="21"
+                    fill="white"
+                    stroke="#293f86"
+                    stroke-width="2"
+                />
+
+                <circle
+                    cx="25"
+                    cy="25"
+                    r="17"
+                    fill="#f87521"
+                />
+
+                <path
+                    d="M16 27
+                       C20 20
+                       29 17
+                       34 20
+                       C30 25
+                       26 29
+                       19 31"
+                    fill="none"
+                    stroke="white"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                />
+
+                <path
+                    d="M27 18
+                       L34 20
+                       L31 27"
+                    fill="none"
+                    stroke="white"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
+
+            </svg>
+
+        </div>
+
+
+        <span>
+            رصيدي
+        </span>
+
+        <span>
+            ****** ر.ي
+        </span>
+
+
+    </div>
+
+
+
+    <!-- =================================================
+         الملاحظة
+    ================================================== -->
+
+    <h3 class="note-title">
+        ملاحظة (اختياري)
+    </h3>
+
+
+    <div class="note">
+
+
+        <textarea
+            id="note"
+            maxlength="30"
+            placeholder="أضف ملاحظة هنا..."
+        ></textarea>
+
+
+        <div class="counter">
+
+            <span id="counter">
+                0
+            </span>
+
+            /30
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =================================================
+         التالي
+    ================================================== -->
+
+    <button
+        class="next"
+        id="nextButton"
+    >
+        التالي
+    </button>
+
+
+</main>
 
 </div>
 
 
 
-<!-- =========================================================
-     قائمة العملة
-========================================================= -->
+<!-- =====================================================
+     قائمة العملات
+===================================================== -->
 
 <div
     class="currency-menu"
@@ -1275,7 +1479,10 @@
 
     <div class="currency-panel">
 
-        <h3>اختر العملة</h3>
+        <h3>
+            اختر العملة
+        </h3>
+
 
         <button
             class="currency-option"
@@ -1284,12 +1491,14 @@
             ريال يمني - ر.ي
         </button>
 
+
         <button
             class="currency-option"
             data-currency="ر.س"
         >
             ريال سعودي - ر.س
         </button>
+
 
         <button
             class="currency-option"
@@ -1306,396 +1515,462 @@
 
 <script>
 
-    /* =====================================================
-       العناصر
-    ===================================================== */
+/* =========================================================
+   العناصر
+========================================================= */
 
-    const paymentPoint =
-        document.getElementById("paymentPoint");
+const pointNumber =
+    document.getElementById("pointNumber");
 
-    const amount =
-        document.getElementById("amount");
+const amount =
+    document.getElementById("amount");
 
-    const amountBox =
-        document.getElementById("amountBox");
+const amountText =
+    document.getElementById("amountText");
 
-    const amountWord =
-        document.getElementById("amountWord");
+const note =
+    document.getElementById("note");
 
-    const note =
-        document.getElementById("note");
+const counter =
+    document.getElementById("counter");
 
-    const counter =
-        document.getElementById("counter");
+const currencyButton =
+    document.getElementById("currencyButton");
 
-    const nextButton =
-        document.getElementById("nextButton");
+const currencyMenu =
+    document.getElementById("currencyMenu");
 
-    const currencyButton =
-        document.getElementById("currencyButton");
-
-    const currencyMenu =
-        document.getElementById("currencyMenu");
-
-    const currencyText =
-        document.getElementById("currencyText");
+const currencyText =
+    document.getElementById("currencyText");
 
 
+/* =========================================================
+   رقم نقطة الدفع
+========================================================= */
 
-    /* =====================================================
-       السماح بالأرقام فقط لنقطة الدفع
-    ===================================================== */
-
-    paymentPoint.addEventListener("input", function () {
+pointNumber.addEventListener(
+    "input",
+    function () {
 
         this.value =
             this.value.replace(/\D/g, "");
 
-        updateButton();
-
-    });
-
+    }
+);
 
 
-    /* =====================================================
-       تنسيق المبلغ
-       
-       مثال:
-       1000  → 1,000
-       10000 → 10,000
-       ===================================================== */
+/* =========================================================
+   تنسيق الرقم
+========================================================= */
 
-    amount.addEventListener("input", function () {
+amount.addEventListener(
+    "input",
+    function () {
 
         let value =
-            this.value.replace(/[^\d.]/g, "");
-
-        /*
-         منع أكثر من فاصلة عشرية
-        */
-
-        const parts = value.split(".");
-
-        if (parts.length > 2) {
-
-            value =
-                parts[0] + "." + parts.slice(1).join("");
-
-        }
-
-
-        let integerPart =
-            parts[0] || "";
-
-
-        let decimalPart =
-            parts[1] || "";
+            this.value.replace(/\D/g, "");
 
 
         /*
-         إزالة الأصفار غير الضرورية
+           إزالة الأصفار في البداية
         */
 
-        if (integerPart.length > 1) {
-
-            integerPart =
-                integerPart.replace(/^0+(?=\d)/, "");
-
-        }
+        value =
+            value.replace(/^0+(?=\d)/, "");
 
 
         /*
-         إضافة الفواصل
+           إضافة الفواصل
         */
 
-        if (integerPart) {
-
-            integerPart =
-                Number(integerPart).toLocaleString("en-US");
-
-        }
-
-
-        if (parts.length > 1) {
+        if (value.length > 0) {
 
             this.value =
-                integerPart + "." + decimalPart;
-
-        } else {
-
-            this.value =
-                integerPart;
-
-        }
-
-
-        /*
-         تغيير حدود الحقل
-        */
-
-        if (this.value.length > 0) {
-
-            amountBox.classList.add("active");
-
-        } else {
-
-            amountBox.classList.remove("active");
-
-        }
-
-
-        updateAmountWord();
-
-        updateButton();
-
-    });
-
-
-
-    /* =====================================================
-       تحويل الرقم إلى كلمة بسيطة
-    ===================================================== */
-
-    function updateAmountWord() {
-
-        let raw =
-            amount.value.replace(/,/g, "");
-
-        if (!raw) {
-
-            amountWord.textContent = "";
-
-            return;
-
-        }
-
-
-        let number =
-            parseFloat(raw);
-
-
-        if (isNaN(number)) {
-
-            amountWord.textContent = "";
-
-            return;
-
-        }
-
-
-        /*
-         في الصورة يظهر:
-         1,000
-         وأسفلها:
-         ألف ري
-        */
-
-        if (number === 1000) {
-
-            amountWord.textContent =
-                "ألف ر.ي";
-
-        }
-
-        else if (number === 2000) {
-
-            amountWord.textContent =
-                "ألفان ر.ي";
-
-        }
-
-        else if (number === 3000) {
-
-            amountWord.textContent =
-                "ثلاثة آلاف ر.ي";
-
-        }
-
-        else if (number === 4000) {
-
-            amountWord.textContent =
-                "أربعة آلاف ر.ي";
-
-        }
-
-        else if (number === 5000) {
-
-            amountWord.textContent =
-                "خمسة آلاف ر.ي";
+                Number(value).toLocaleString("en-US");
 
         }
 
         else {
 
-            amountWord.textContent = "";
+            this.value = "";
 
         }
 
+
+        /*
+           تحديث الكتابة العربية
+        */
+
+        updateArabicAmount();
+
+    }
+);
+
+
+/* =========================================================
+   تحويل الأرقام إلى كلمات
+========================================================= */
+
+function numberToArabic(number) {
+
+    if (number === 0)
+        return "صفر";
+
+
+    const ones = [
+        "",
+        "واحد",
+        "اثنان",
+        "ثلاثة",
+        "أربعة",
+        "خمسة",
+        "ستة",
+        "سبعة",
+        "ثمانية",
+        "تسعة"
+    ];
+
+
+    const tens = [
+        "",
+        "",
+        "عشرون",
+        "ثلاثون",
+        "أربعون",
+        "خمسون",
+        "ستون",
+        "سبعون",
+        "ثمانون",
+        "تسعون"
+    ];
+
+
+    const teens = [
+        "عشرة",
+        "أحد عشر",
+        "اثنا عشر",
+        "ثلاثة عشر",
+        "أربعة عشر",
+        "خمسة عشر",
+        "ستة عشر",
+        "سبعة عشر",
+        "ثمانية عشر",
+        "تسعة عشر"
+    ];
+
+
+    function under100(n) {
+
+        if (n < 10)
+            return ones[n];
+
+        if (n < 20)
+            return teens[n - 10];
+
+        const t =
+            Math.floor(n / 10);
+
+        const o =
+            n % 10;
+
+        if (o === 0)
+            return tens[t];
+
+        return ones[o] + " و" + tens[t];
     }
 
 
+    function under1000(n) {
 
-    /* =====================================================
-       عداد الملاحظة
-    ===================================================== */
+        if (n < 100)
+            return under100(n);
 
-    note.addEventListener("input", function () {
+        const h =
+            Math.floor(n / 100);
+
+        const rest =
+            n % 100;
+
+
+        const hundreds = [
+            "",
+            "مائة",
+            "مائتان",
+            "ثلاثمائة",
+            "أربعمائة",
+            "خمسمائة",
+            "ستمائة",
+            "سبعمائة",
+            "ثمانمائة",
+            "تسعمائة"
+        ];
+
+
+        if (rest === 0)
+            return hundreds[h];
+
+        return hundreds[h]
+             + " و"
+             + under100(rest);
+    }
+
+
+    function convert(n) {
+
+        if (n < 1000)
+            return under1000(n);
+
+
+        if (n < 1000000) {
+
+            const thousands =
+                Math.floor(n / 1000);
+
+            const rest =
+                n % 1000;
+
+
+            let text;
+
+
+            if (thousands === 1) {
+
+                text = "ألف";
+
+            }
+
+            else if (thousands === 2) {
+
+                text = "ألفان";
+
+            }
+
+            else if (thousands >= 3 && thousands <= 10) {
+
+                text =
+                    under1000(thousands)
+                    + " آلاف";
+
+            }
+
+            else {
+
+                text =
+                    under1000(thousands)
+                    + " ألف";
+
+            }
+
+
+            if (rest > 0) {
+
+                text +=
+                    " و" +
+                    under1000(rest);
+
+            }
+
+
+            return text;
+        }
+
+
+        if (n < 1000000000) {
+
+            const millions =
+                Math.floor(n / 1000000);
+
+            const rest =
+                n % 1000000;
+
+
+            let text;
+
+
+            if (millions === 1) {
+
+                text = "مليون";
+
+            }
+
+            else if (millions === 2) {
+
+                text = "مليونان";
+
+            }
+
+            else if (
+                millions >= 3 &&
+                millions <= 10
+            ) {
+
+                text =
+                    under1000(millions)
+                    + " ملايين";
+
+            }
+
+            else {
+
+                text =
+                    under1000(millions)
+                    + " مليون";
+
+            }
+
+
+            if (rest > 0) {
+
+                text +=
+                    " و" +
+                    convert(rest);
+
+            }
+
+
+            return text;
+        }
+
+
+        return number.toLocaleString("ar");
+    }
+
+
+    return convert(number);
+}
+
+
+/* =========================================================
+   تحديث النص التفاعلي
+========================================================= */
+
+function updateArabicAmount() {
+
+    let raw =
+        amount.value.replace(/,/g, "");
+
+
+    if (!raw) {
+
+        amountText.textContent = "";
+
+        return;
+    }
+
+
+    const number =
+        parseInt(raw, 10);
+
+
+    if (
+        isNaN(number) ||
+        number <= 0
+    ) {
+
+        amountText.textContent = "";
+
+        return;
+    }
+
+
+    amountText.textContent =
+        numberToArabic(number)
+        + " ر.ي";
+}
+
+
+/* =========================================================
+   عداد الملاحظة
+========================================================= */
+
+note.addEventListener(
+    "input",
+    function () {
 
         counter.textContent =
             this.value.length;
 
-    });
-
-
-
-    /* =====================================================
-       تفعيل زر التالي
-    ===================================================== */
-
-    function updateButton() {
-
-        const point =
-            paymentPoint.value.trim();
-
-        const money =
-            amount.value.replace(/,/g, "").trim();
-
-
-        /*
-         يجب أن يوجد رقم نقطة دفع
-         ومبلغ
-        */
-
-        if (
-            point.length > 0 &&
-            money.length > 0 &&
-            parseFloat(money) > 0
-        ) {
-
-            nextButton.disabled = false;
-
-            nextButton.classList.add("active");
-
-        }
-
-        else {
-
-            nextButton.disabled = true;
-
-            nextButton.classList.remove("active");
-
-        }
-
     }
+);
 
 
+/* =========================================================
+   قائمة العملة
+========================================================= */
 
-    /* =====================================================
-       فتح قائمة العملات
-    ===================================================== */
-
-    currencyButton.addEventListener("click", function () {
+currencyButton.addEventListener(
+    "click",
+    function () {
 
         currencyMenu.classList.add("show");
 
-    });
+    }
+);
 
 
+document
+    .querySelectorAll(".currency-option")
+    .forEach(function (option) {
 
-    /* =====================================================
-       اختيار العملة
-    ===================================================== */
-
-    document.querySelectorAll(".currency-option")
-        .forEach(function (button) {
-
-            button.addEventListener("click", function () {
+        option.addEventListener(
+            "click",
+            function () {
 
                 currencyText.textContent =
                     this.dataset.currency;
 
-                currencyMenu.classList.remove("show");
+                currencyMenu.classList.remove(
+                    "show"
+                );
 
-            });
-
-        });
-
-
-
-    /* =====================================================
-       إغلاق قائمة العملات عند الضغط خارجها
-    ===================================================== */
-
-    currencyMenu.addEventListener("click", function (event) {
-
-        if (event.target === currencyMenu) {
-
-            currencyMenu.classList.remove("show");
-
-        }
-
-    });
-
-
-
-    /* =====================================================
-       زر التالي
-    ===================================================== */
-
-    nextButton.addEventListener("click", function () {
-
-        if (this.disabled) {
-            return;
-        }
-
-
-        const point =
-            paymentPoint.value;
-
-        const money =
-            amount.value;
-
-        const noteValue =
-            note.value;
-
-
-        alert(
-            "رقم نقطة الدفع: " +
-            point +
-            "\nالمبلغ: " +
-            money +
-            " " +
-            currencyText.textContent +
-            (noteValue
-                ? "\nالملاحظة: " + noteValue
-                : "")
+            }
         );
 
     });
 
 
+currencyMenu.addEventListener(
+    "click",
+    function (event) {
 
-    /* =====================================================
-       منع ظهور لوحة المفاتيح بطريقة غريبة
-       عند الضغط على الأرقام
-    ===================================================== */
+        if (
+            event.target ===
+            currencyMenu
+        ) {
 
-    paymentPoint.addEventListener("focus", function () {
+            currencyMenu.classList.remove(
+                "show"
+            );
 
-        this.setSelectionRange(
-            this.value.length,
-            this.value.length
-        );
+        }
 
-    });
+    }
+);
 
 
+/* =========================================================
+   زر التالي
+========================================================= */
 
-    /* =====================================================
-       تشغيل أولي
-    ===================================================== */
+document
+    .getElementById("nextButton")
+    .addEventListener(
+        "click",
+        function () {
 
-    updateButton();
+            alert(
+                "رقم نقطة الدفع: "
+                + pointNumber.value
+                + "\n\nالمبلغ: "
+                + amount.value
+                + " "
+                + currencyText.textContent
+                + "\n\nالمبلغ كتابة: "
+                + amountText.textContent
+            );
+
+        }
+    );
 
 </script>
 
