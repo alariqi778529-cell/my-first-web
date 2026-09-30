@@ -2,254 +2,382 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مساحتنا الخاصة 🔐</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>دفع مشتريات وخدمات</title>
+    <!-- استدعاء خط Tajawal ليعطي نفس مظهر الخط الاصلي في التطبيق -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
     <style>
-        body {
-            background-color: #0b0f19;
-            color: #00ffcc;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        * {
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
             margin: 0;
             padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #f6f8fb;
+            color: #1a2b49;
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            min-height: 100vh;
+            direction: rtl;
         }
-        header {
-            background: #111827;
-            padding: 15px;
-            text-align: center;
-            border-bottom: 1px solid #00ffcc;
-            box-shadow: 0 2px 10px rgba(0, 255, 204, 0.1);
-        }
-        header h1 {
-            margin: 0;
-            font-size: 20px;
-            letter-spacing: 1px;
-        }
-        #chatBox {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
+
+        /* الشريط العلوي - Header */
+        .app-header {
+            background-color: #f36f21;
+            color: #ffffff;
+            height: 58px;
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
             gap: 12px;
-            background: radial-gradient(circle at center, #111c24 0%, #0b0f19 100%);
         }
-        .message {
-            max-width: 75%;
-            padding: 12px 16px;
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 22px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            background-color: #0f2a5c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .help-icon {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        /* حاوية الصفحة - Container */
+        .container {
+            padding: 24px 18px 20px 18px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .label {
+            font-size: 18px;
+            font-weight: 800;
+            color: #1a2b49;
+            margin-bottom: 12px;
+            display: block;
+            text-align: right;
+        }
+
+        /* حقل نقطة الدفع */
+        .pos-field-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .qr-btn {
+            width: 52px;
+            height: 52px;
+            background-color: #ffffff;
+            border: 1px solid #dcdfe6;
             border-radius: 12px;
-            line-height: 1.5;
-            font-size: 15px;
-            word-break: break-word;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
         }
-        .my-msg {
-            background: #00ffcc;
-            color: #0b0f19;
-            align-self: flex-start;
-            border-bottom-right-radius: 2px;
+
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-field {
+            width: 100%;
+            height: 52px;
+            background-color: #ffffff;
+            border: 1.5px solid #f36f21;
+            border-radius: 12px;
+            padding: 0 44px 0 16px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a2b49;
+            outline: none;
+        }
+
+        .user-icon {
+            position: absolute;
+            right: 14px;
+            display: flex;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .favorite-link {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 4px;
+            color: #1a2b49;
+            font-size: 15px;
+            font-weight: 800;
+            margin-top: 10px;
+            text-decoration: none;
+        }
+
+        .favorite-link span {
+            text-decoration: underline;
+        }
+
+        /* حقل المبلغ */
+        .amount-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .currency-selector {
+            width: 90px;
+            height: 52px;
+            background-color: #ffffff;
+            border: 1px solid #dcdfe6;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 800;
+            color: #1a2b49;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .amount-input-wrapper {
+            flex: 1;
+        }
+
+        .amount-input {
+            width: 100%;
+            height: 52px;
+            background-color: #ffffff;
+            border: 1px solid #dcdfe6;
+            border-radius: 12px;
+            padding: 0 16px;
+            font-size: 17px;
+            font-weight: 700;
+            color: #1a2b49;
+            outline: none;
+        }
+
+        .amount-input::placeholder {
+            color: #8c9bbd;
             font-weight: 500;
         }
-        .her-msg {
-            background: #1f2937;
-            color: #ffffff;
-            align-self: flex-end;
-            border-bottom-left-radius: 2px;
-            border: 1px solid #374151;
+
+        .balance-info {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 6px;
+            font-size: 15px;
+            font-weight: 800;
+            color: #1a2b49;
+            margin-top: 12px;
         }
-        .status-text {
-            text-align: center;
+
+        .balance-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid #f36f21;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #f36f21;
             font-size: 12px;
-            color: #6b7280;
-            margin: 5px 0;
-        }
-        .input-area {
-            background: #111827;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            border-top: 1px solid #1f2937;
-        }
-        .controls-row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        textarea {
-            flex: 1;
-            height: 50px;
-            background: #1f2937;
-            border: 1px solid #374151;
-            color: #fff;
-            padding: 10px;
-            border-radius: 8px;
-            resize: none;
-            box-sizing: border-box;
-            font-family: inherit;
-        }
-        textarea:focus {
-            outline: none;
-            border-color: #00ffcc;
-        }
-        .btn-send {
-            background: #00ffcc;
-            color: #0b0f19;
-            border: none;
-            padding: 0 20px;
-            height: 50px;
             font-weight: bold;
-            border-radius: 8px;
+        }
+
+        /* حقل الملاحظة */
+        .note-container {
+            position: relative;
+        }
+
+        .note-input {
+            width: 100%;
+            height: 70px;
+            background-color: #ffffff;
+            border: 1px solid #dcdfe6;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a2b49;
+            outline: none;
+            resize: none;
+            text-align: right;
+        }
+
+        .note-input::placeholder {
+            color: #8c9bbd;
+            font-weight: 500;
+        }
+
+        .char-counter {
+            position: absolute;
+            bottom: 12px;
+            left: 14px;
+            font-size: 13px;
+            color: #8c9bbd;
+            font-weight: 700;
+        }
+
+        /* زر التالي */
+        .submit-btn {
+            margin-top: auto;
+            margin-bottom: 15px;
+            width: 100%;
+            height: 52px;
+            background-color: #8c9bbd;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-size: 19px;
+            font-weight: 800;
             cursor: pointer;
-            transition: 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
-        .btn-send:hover {
-            background: #00ccaa;
-        }
-        .file-upload-wrapper {
-            display: flex;
-            align-items: center;
-            background: #1f2937;
-            border: 1px solid #374151;
-            border-radius: 6px;
-            padding: 5px 10px;
-            font-size: 13px;
-        }
-        input[type="file"] {
-            color: #9ca3af;
-        }
-        #statusDisplay {
-            color: #ffcc00;
-            font-size: 13px;
-            text-align: center;
-            min-height: 18px;
+
+        .submit-btn:active {
+            background-color: #7282a5;
         }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>مساحتنا السرية 🔐 💞</h1>
-</header>
+    <!-- الشريط العلوي -->
+    <header class="app-header">
+        <div class="header-right">
+            <button class="back-btn">&#8594;</button>
+            <span class="header-title">دفع مشتريات وخدمات</span>
+        </div>
+        <div class="header-left">
+            <div class="help-icon">?</div>
+            <div class="profile-avatar">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="#ffffff">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+            </div>
+        </div>
+    </header>
 
-<div id="chatBox">
-    <div class="status-text">مرحباً بك في المحادثة الآمنة المشفرة</div>
-</div>
+    <!-- محتوى الصفحة -->
+    <div class="container">
+        
+        <!-- حقل رقم نقطة الدفع -->
+        <div class="form-group">
+            <label class="label">أدخل رقم نقطة الدفع</label>
+            <div class="pos-field-container">
+                <div class="qr-btn">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f36f21" stroke-width="2.2">
+                        <path d="M3 3h6v6H3zM15 3h6v6h-6zM3 15h6v6H3zM15 15h2v2h-2zM19 15h2v2h-2zM15 19h2v2h-2zM19 19h2v2h-2z"/>
+                    </svg>
+                </div>
+                <div class="input-wrapper">
+                    <span class="user-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="#1a2b49">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                    </span>
+                    <input type="text" class="input-field" value="">
+                </div>
+            </div>
+            <a href="#" class="favorite-link">
+                <span>اختر من المفضلة</span>
+                <span style="color:#facc15; text-decoration:none;">★</span>
+            </a>
+        </div>
 
-<div class="input-area">
-    <div id="statusDisplay"></div>
-    <div class="file-upload-wrapper">
-        <label style="margin-left: 10px; color: #00ffcc;">إرفاق ملف/صورة:</label>
-        <input type="file" id="fileInput">
+        <!-- حقل مبلغ العملية -->
+        <div class="form-group">
+            <label class="label">مبلغ العملية</label>
+            <div class="amount-container">
+                <div class="currency-selector">
+                    <span style="font-size: 11px;">▼</span>
+                    <span>ر.ي</span>
+                </div>
+                <div class="amount-input-wrapper">
+                    <input type="text" class="amount-input" placeholder="أدخل المبلغ">
+                </div>
+            </div>
+            <div class="balance-info">
+                <div class="balance-icon">&#8635;</div>
+                <span>رصيدي * * * * * * ر.ي</span>
+            </div>
+        </div>
+
+        <!-- حقل ملاحظة (اختياري) -->
+        <div class="form-group">
+            <label class="label">ملاحظة (اختياري)</label>
+            <div class="note-container">
+                <textarea class="note-input" placeholder="أضف ملاحظة هنا..." maxlength="30" oninput="updateCount(this)"></textarea>
+                <span class="char-counter" id="counter">0/30</span>
+            </div>
+        </div>
+
+        <!-- زر التالي -->
+        <button class="submit-btn">التالي</button>
+
     </div>
-    <div class="controls-row">
-        <textarea id="textInput" placeholder="اكتب رسالة سرية هنا..."></textarea>
-        <button class="btn-send" onclick="sendMessage()">إرسال 🚀</button>
-    </div>
-</div>
 
-<script>
-    // توكن البوت القديم الخاص بك (طوارئ) الذي طلبته من لقطة الشاشة
-    const TOKEN = "8579983010:AAFKb1FFzbNYk0bxOY6afuSZg3cIu35nobI";
-    
-    // هُنا نضع رقم الـ Chat ID الثابت حتى لا تحتاج لزر الجلب التلقائي.
-    // يمكنك كتابة الـ ID الخاص بك مباشرة، أو الـ ID الخاص بالمجموعة المشتركة بينكما.
-    let CHAT_ID = "6837507867"; 
-
-    // دالة لجلب الرسائل وتحديث الشات تلقائياً (Long Polling مبسط)
-    async function checkUpdates() {
-        try {
-            let response = await fetch(`https://api.telegram.org/bot${TOKEN}/getUpdates?offset=-10`);
-            let data = await response.json();
-            if (data.ok && data.result.length > 0) {
-                // تصفية وعرض الرسائل لتظهر في الشات واجهة المستخدم
-                // هذه الدالة برمجية لمساعدتك على رؤية النصوص داخل المستودع مستقبلاً
-            }
-        } catch (e) {
-            console.log("خطأ في تحديث البيانات المباشرة");
+    <script>
+        function updateCount(textarea) {
+            const counter = document.getElementById('counter');
+            counter.innerText = textarea.value.length + '/30';
         }
-    }
-
-    // إرسال النصوص والملفات
-    async function sendMessage() {
-        const textInput = document.getElementById('textInput');
-        const fileInput = document.getElementById('fileInput');
-        const statusDisplay = document.getElementById('statusDisplay');
-        
-        const text = textInput.value.trim();
-        if (!text && fileInput.files.length === 0) {
-            statusDisplay.innerText = "⚠️ من فضلك اكتب شيئاً أو اختر ملفاً أولاً.";
-            return;
-        }
-
-        statusDisplay.innerText = "جاري التشفير والإرسال...";
-        
-        // إنشاء عنصر الرسالة داخل واجهة الصفحة فوراً قبل الرفع لتسهيل الرؤية
-        const chatBox = document.getElementById('chatBox');
-        
-        // 1. في حال وجود ملف مرفق
-        if (fileInput.files.length > 0) {
-            let file = fileInput.files[0];
-            let formData = new FormData();
-            formData.append("chat_id", CHAT_ID);
-            formData.append("document", file);
-            if (text) formData.append("caption", text);
-
-            try {
-                let res = await fetch(`https://api.telegram.org/bot${TOKEN}/sendDocument`, {
-                    method: "POST",
-                    body: formData
-                });
-                let result = await res.json();
-                if (result.ok) {
-                    statusDisplay.innerText = "✅ تم إرسال الملف بنجاح!";
-                    appendMessage(text ? `📄 [ملف] ${text}` : `📄 تم إرسال ملف: ${file.name}`, 'my-msg');
-                    fileInput.value = "";
-                    textInput.value = "";
-                } else {
-                    statusDisplay.innerText = "❌ فشل الرفع: " + result.description;
-                }
-            } catch (err) {
-                statusDisplay.innerText = "خطأ أثناء الاتصال بالخادم للرفع.";
-            }
-        } 
-        // 2. في حال وجود نص فقط
-        else if (text) {
-            try {
-                let res = await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ chat_id: CHAT_ID, text: text })
-                });
-                let result = await res.json();
-                if (result.ok) {
-                    statusDisplay.innerText = "✅ تم إرسال النص!";
-                    appendMessage(text, 'my-msg');
-                    textInput.value = "";
-                } else {
-                    statusDisplay.innerText = "❌ فشل الإرسال.";
-                }
-            } catch (err) {
-                statusDisplay.innerText = "خطأ أثناء إرسال النص.";
-            }
-        }
-        
-        setTimeout(() => { statusDisplay.innerText = ""; }, 3000);
-    }
-
-    function appendMessage(msgText, className) {
-        const chatBox = document.getElementById('chatBox');
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `message ${className}`;
-        msgDiv.innerText = msgText;
-        chatBox.appendChild(msgDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    // فحص التحديثات كل 5 ثوانٍ بشكل مستمر
-    setInterval(checkUpdates, 5000);
-</script>
+    </script>
 
 </body>
 </html>
