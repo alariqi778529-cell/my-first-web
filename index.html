@@ -1,1787 +1,465 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-<title>دفع مشتريات وخدمات</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-
-<style>
-
-/* =========================================================
-   ONE CASH PAYMENT UI
-   Single-file GitHub version
-   ========================================================= */
-
-:root{
-    --orange:#f87320;
-    --orange-border:#e77b32;
-    --blue:#263d87;
-    --blue-dark:#233b87;
-    --blue-disabled:#8998c1;
-    --text:#263d87;
-    --muted:#8b97b8;
-    --border:#d7dbe4;
-    --background:#f8f8f8;
-    --white:#ffffff;
-    --yellow:#ffbe00;
-}
-
-/* =========================
-   RESET
-   ========================= */
-
-*{
-    box-sizing:border-box;
-    -webkit-tap-highlight-color:transparent;
-}
-
-html,
-body{
-    margin:0;
-    padding:0;
-    width:100%;
-    min-height:100%;
-    background:var(--background);
-}
-
-body{
-    font-family:"Tajawal","Noto Sans Arabic",Tahoma,Arial,sans-serif;
-    color:var(--text);
-    direction:rtl;
-    overflow-x:hidden;
-}
-
-/* =========================
-   MAIN APP
-   ========================= */
-
-.app{
-    width:100%;
-    min-height:100vh;
-    background:var(--background);
-}
-
-/* =========================
-   TOP BAR
-   ========================= */
-
-.header{
-    height:102px;
-    width:100%;
-    background:var(--orange);
-    color:white;
-
-    display:grid;
-    grid-template-columns:70px 70px 1fr 70px;
-    align-items:center;
-
-    padding:0 27px;
-}
-
-.header-title{
-    text-align:center;
-    font-size:28px;
-    font-weight:800;
-    white-space:nowrap;
-    line-height:1;
-}
-
-.header-help{
-    width:39px;
-    height:39px;
-
-    border:4px solid white;
-    border-radius:50%;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:25px;
-    font-weight:800;
-
-    color:white;
-    background:transparent;
-
-    justify-self:start;
-}
-
-.header-avatar{
-    width:57px;
-    height:57px;
-
-    border-radius:50%;
-
-    background:
-        radial-gradient(circle at 50% 31%,
-        #d4a47c 0 13%,
-        #2d2928 14% 25%,
-        transparent 26%),
-
-        radial-gradient(circle at 50% 56%,
-        #ead1ba 0 19%,
-        #30302f 20% 32%,
-        transparent 33%),
-
-        linear-gradient(
-        145deg,
-        #2d5a83,
-        #d6a06e 45%,
-        #243d62
-        );
-
-    border:2px solid rgba(255,255,255,.25);
-
-    justify-self:center;
-
-    position:relative;
-    overflow:hidden;
-}
-
-.header-avatar:before{
-    content:"";
-    position:absolute;
-
-    width:26px;
-    height:13px;
-
-    background:#e8d1bd;
-
-    border-radius:50% 50% 35% 35%;
-
-    left:50%;
-    top:35%;
-
-    transform:translate(-50%,-50%);
-}
-
-.header-avatar:after{
-    content:"";
-    position:absolute;
-
-    width:45px;
-    height:27px;
-
-    background:#26374d;
-
-    border-radius:50% 50% 5px 5px;
-
-    left:50%;
-    bottom:0;
-
-    transform:translateX(-50%);
-}
-
-.header-back{
-    width:43px;
-    height:43px;
-
-    border:none;
-    background:transparent;
-
-    color:white;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    justify-self:end;
-
-    cursor:pointer;
-}
-
-.header-back svg{
-    width:38px;
-    height:38px;
-
-    fill:none;
-    stroke:white;
-    stroke-width:2.5;
-    stroke-linecap:round;
-    stroke-linejoin:round;
-}
-
-/* =========================
-   CONTENT
-   ========================= */
-
-.content{
-    width:100%;
-    max-width:691px;
-
-    min-height:calc(100vh - 102px);
-
-    margin:0 auto;
-
-    padding:
-        48px
-        44px
-        150px;
-}
-
-/* =========================
-   TITLES
-   ========================= */
-
-.title{
-    color:var(--text);
-
-    font-size:30px;
-    font-weight:800;
-
-    line-height:1.25;
-
-    text-align:right;
-}
-
-/* =========================
-   PAYMENT POINT
-   ========================= */
-
-.payment-title{
-    margin-bottom:29px;
-}
-
-/* =========================
-   PAYMENT POINT ROW
-   ========================= */
-
-.payment-row{
-    width:100%;
-
-    display:grid;
-
-    grid-template-columns:86px 1fr;
-
-    gap:15px;
-
-    direction:ltr;
-}
-
-/* =========================
-   QR BUTTON
-   ========================= */
-
-.qr-button{
-    height:94px;
-
-    border:2px solid var(--border);
-
-    border-radius:14px;
-
-    background:white;
-
-    color:var(--orange);
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    cursor:pointer;
-
-    transition:
-        border-color .2s ease,
-        transform .1s ease;
-}
-
-.qr-button:active{
-    transform:scale(.98);
-}
-
-.qr-button svg{
-    width:36px;
-    height:36px;
-
-    fill:none;
-
-    stroke:currentColor;
-
-    stroke-width:2.4;
-
-    stroke-linecap:round;
-    stroke-linejoin:round;
-}
-
-/* =========================
-   INPUT
-   ========================= */
-
-.input-wrapper{
-    height:94px;
-
-    position:relative;
-}
-
-.payment-input{
-    width:100%;
-    height:94px;
-
-    border:2px solid var(--orange-border);
-
-    border-radius:14px;
-
-    background:white;
-
-    outline:none;
-
-    padding:
-        0
-        58px
-        0
-        22px;
-
-    color:var(--blue);
-
-    font-size:36px;
-
-    font-weight:700;
-
-    direction:rtl;
-
-    text-align:right;
-
-    transition:
-        border-color .18s ease,
-        box-shadow .18s ease;
-}
-
-.payment-input:focus{
-    border-color:var(--orange-border);
-
-    box-shadow:
-        0 0 0 1px rgba(244,113,33,.05);
-}
-
-.payment-input.filled{
-    border-color:var(--blue);
-}
-
-.person-icon{
-    position:absolute;
-
-    left:29px;
-    top:50%;
-
-    transform:translateY(-50%);
-
-    width:42px;
-    height:42px;
-
-    color:var(--blue);
-
-    pointer-events:none;
-
-    z-index:2;
-}
-
-.person-icon svg{
-    width:100%;
-    height:100%;
-
-    fill:currentColor;
-}
-
-/* =========================
-   FAVORITE
-   ========================= */
-
-.favorite{
-    margin-top:35px;
-
-    margin-right:0;
-
-    border:0;
-
-    background:transparent;
-
-    color:#63739c;
-
-    font-size:27px;
-
-    font-weight:700;
-
-    text-decoration:underline;
-
-    display:flex;
-
-    align-items:center;
-
-    gap:11px;
-
-    cursor:pointer;
-
-    padding:0;
-}
-
-.favorite svg{
-    width:34px;
-    height:34px;
-
-    fill:var(--yellow);
-
-    stroke:var(--yellow);
-
-    transition:
-        transform .18s ease;
-}
-
-.favorite.active svg{
-    transform:scale(1.1);
-}
-
-/* =========================
-   ERROR
-   ========================= */
-
-.error{
-    color:#cf4137;
-
-    font-size:15px;
-
-    text-align:right;
-
-    min-height:0;
-
-    margin:4px 0 0;
-}
-
-/* =========================
-   AMOUNT
-   ========================= */
-
-.amount-title{
-    margin-top:53px;
-
-    margin-bottom:40px;
-}
-
-/* =========================
-   AMOUNT ROW
-   ========================= */
-
-.amount-row{
-    width:100%;
-
-    display:grid;
-
-    grid-template-columns:162px 1fr;
-
-    gap:15px;
-
-    direction:ltr;
-}
-
-/* =========================
-   CURRENCY
-   ========================= */
-
-.currency{
-    height:106px;
-
-    border:2px solid var(--border);
-
-    border-radius:14px;
-
-    background:white;
-
-    color:var(--blue);
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    gap:22px;
-
-    cursor:pointer;
-}
-
-.currency span{
-    font-size:27px;
-    font-weight:800;
-}
-
-.currency svg{
-    width:30px;
-    height:30px;
-
-    fill:none;
-
-    stroke:currentColor;
-
-    stroke-width:3;
-
-    stroke-linecap:round;
-
-    stroke-linejoin:round;
-}
-
-/* =========================
-   AMOUNT INPUT
-   ========================= */
-
-.amount-wrapper{
-    height:106px;
-}
-
-.amount-input{
-    width:100%;
-    height:106px;
-
-    border:2px solid var(--border);
-
-    border-radius:14px;
-
-    background:white;
-
-    outline:none;
-
-    padding:0 27px;
-
-    font-size:36px;
-
-    font-weight:500;
-
-    color:var(--blue);
-
-    text-align:right;
-
-    direction:ltr;
-
-    transition:
-        border-color .18s ease,
-        box-shadow .18s ease;
-}
-
-.amount-input:focus{
-    border-color:var(--orange-border);
-
-    box-shadow:
-        0 0 0 1px rgba(244,113,33,.05);
-}
-
-.amount-input::placeholder{
-    color:var(--muted);
-
-    opacity:1;
-}
-
-/* =========================
-   AMOUNT WORDS
-   ========================= */
-
-.amount-words{
-    min-height:43px;
-
-    margin-top:9px;
-
-    text-align:right;
-
-    color:var(--blue);
-
-    font-size:25px;
-
-    font-weight:700;
-}
-
-/* =========================
-   BALANCE
-   ========================= */
-
-.balance{
-    margin-top:12px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:flex-start;
-
-    direction:rtl;
-
-    gap:6px;
-
-    color:var(--blue);
-
-    font-size:23px;
-
-    font-weight:800;
-}
-
-.balance strong{
-    font-size:22px;
-
-    font-weight:700;
-
-    letter-spacing:2px;
-}
-
-.balance-icon{
-    width:40px;
-    height:40px;
-
-    display:flex;
-
-    align-items:center;
-    justify-content:center;
-
-    color:var(--orange);
-}
-
-.balance-icon svg{
-    width:40px;
-    height:40px;
-
-    fill:none;
-
-    stroke:currentColor;
-
-    stroke-width:2;
-
-    stroke-linecap:round;
-
-    stroke-linejoin:round;
-}
-
-/* =========================
-   NOTE
-   ========================= */
-
-.note-title{
-    margin-top:54px;
-
-    margin-bottom:31px;
-}
-
-.note-wrapper{
-    position:relative;
-
-    width:100%;
-}
-
-.note{
-    width:100%;
-    height:121px;
-
-    border:2px solid var(--border);
-
-    border-radius:14px;
-
-    background:white;
-
-    outline:none;
-
-    resize:none;
-
-    padding:
-        27px
-        23px
-        36px;
-
-    color:var(--blue);
-
-    font-size:27px;
-
-    font-weight:500;
-
-    text-align:right;
-
-    direction:rtl;
-
-    font-family:inherit;
-
-    transition:
-        border-color .18s ease,
-        box-shadow .18s ease;
-}
-
-.note:focus{
-    border-color:var(--orange-border);
-
-    box-shadow:
-        0 0 0 1px rgba(244,113,33,.05);
-}
-
-.note::placeholder{
-    color:var(--muted);
-
-    opacity:1;
-}
-
-.counter{
-    position:absolute;
-
-    left:15px;
-
-    bottom:16px;
-
-    color:#64749f;
-
-    font-size:23px;
-
-    font-weight:500;
-
-    direction:ltr;
-
-    pointer-events:none;
-}
-
-/* =========================
-   NEXT BUTTON
-   ========================= */
-
-.next{
-    width:calc(100% - 66px);
-
-    height:108px;
-
-    margin:
-        240px
-        auto
-        0;
-
-    display:block;
-
-    border:0;
-
-    border-radius:19px;
-
-    background:var(--blue-disabled);
-
-    color:white;
-
-    font-family:inherit;
-
-    font-size:33px;
-
-    font-weight:800;
-
-    cursor:not-allowed;
-
-    box-shadow:
-        0 5px 10px rgba(34,48,94,.12);
-
-    transition:
-        background .2s ease,
-        transform .1s ease,
-        box-shadow .2s ease;
-}
-
-.next.enabled{
-    background:var(--blue-dark);
-
-    cursor:pointer;
-
-    box-shadow:
-        0 5px 10px rgba(36,58,133,.2);
-}
-
-.next.enabled:active{
-    transform:translateY(1px);
-}
-
-/* =========================
-   TOAST
-   ========================= */
-
-.toast{
-    position:fixed;
-
-    z-index:999;
-
-    right:50%;
-
-    bottom:25px;
-
-    transform:
-        translate(50%,20px);
-
-    opacity:0;
-
-    pointer-events:none;
-
-    padding:12px 20px;
-
-    border-radius:12px;
-
-    background:rgba(35,59,135,.97);
-
-    color:white;
-
-    font-size:15px;
-
-    transition:
-        opacity .2s ease,
-        transform .2s ease;
-}
-
-.toast.show{
-    opacity:1;
-
-    transform:
-        translate(50%,0);
-}
-
-/* =========================
-   RESPONSIVE
-   ========================= */
-
-@media(max-width:600px){
-
-    .header{
-        height:92px;
-
-        grid-template-columns:
-            48px
-            52px
-            1fr
-            48px;
-
-        padding:0 18px;
-
-        gap:4px;
-    }
-
-    .header-title{
-        font-size:22px;
-    }
-
-    .header-avatar{
-        width:49px;
-        height:49px;
-    }
-
-    .header-help{
-        width:36px;
-        height:36px;
-
-        font-size:22px;
-
-        border-width:3px;
-    }
-
-    .content{
-        min-height:calc(100vh - 92px);
-
-        padding:
-            38px
-            24px
-            120px;
-    }
-
-    .title{
-        font-size:26px;
-    }
-
-    .payment-title{
-        margin-bottom:28px;
-    }
-
-    .payment-row{
-        grid-template-columns:
-            76px
-            1fr;
-
-        gap:10px;
-    }
-
-    .qr-button,
-    .payment-input{
-        height:88px;
-    }
-
-    .payment-input{
-        font-size:30px;
-
-        padding-right:50px;
-    }
-
-    .person-icon{
-        left:22px;
-
-        width:36px;
-        height:36px;
-    }
-
-    .favorite{
-        margin-top:27px;
-
-        font-size:23px;
-
-        gap:9px;
-    }
-
-    .favorite svg{
-        width:30px;
-        height:30px;
-    }
-
-    .amount-title{
-        margin-top:43px;
-        margin-bottom:30px;
-    }
-
-    .amount-row{
-        grid-template-columns:
-            118px
-            1fr;
-
-        gap:10px;
-    }
-
-    .currency,
-    .amount-input{
-        height:92px;
-    }
-
-    .currency{
-        gap:10px;
-    }
-
-    .currency span{
-        font-size:22px;
-    }
-
-    .currency svg{
-        width:23px;
-        height:23px;
-    }
-
-    .amount-input{
-        font-size:30px;
-        padding:0 18px;
-    }
-
-    .amount-words{
-        font-size:21px;
-    }
-
-    .balance{
-        font-size:19px;
-    }
-
-    .balance strong{
-        font-size:18px;
-    }
-
-    .balance-icon,
-    .balance-icon svg{
-        width:34px;
-        height:34px;
-    }
-
-    .note-title{
-        margin-top:44px;
-        margin-bottom:24px;
-    }
-
-    .note{
-        height:115px;
-
-        font-size:22px;
-
-        padding:
-            26px
-            18px
-            34px;
-    }
-
-    .counter{
-        font-size:19px;
-    }
-
-    .next{
-        width:calc(100% - 30px);
-
-        height:92px;
-
-        margin-top:190px;
-
-        font-size:29px;
-    }
-}
-
-/* =========================
-   SMALL PHONES
-   ========================= */
-
-@media(max-width:390px){
-
-    .header{
-        padding:0 12px;
-
-        grid-template-columns:
-            43px
-            47px
-            1fr
-            43px;
-    }
-
-    .header-title{
-        font-size:19px;
-    }
-
-    .content{
-        padding-left:18px;
-        padding-right:18px;
-    }
-
-    .payment-row{
-        grid-template-columns:
-            70px
-            1fr;
-    }
-
-    .amount-row{
-        grid-template-columns:
-            105px
-            1fr;
-    }
-
-    .favorite{
-        font-size:21px;
-    }
-}
-
-/* =========================
-   ACCESSIBILITY
-   ========================= */
-
-button:focus-visible,
-input:focus-visible,
-textarea:focus-visible{
-    outline:3px solid rgba(36,58,133,.2);
-    outline-offset:2px;
-}
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ONE Cash - دفع مشتريات وخدمات</title>
+    <!-- FontAwesome للأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- خط Tajawal من Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary-orange: #f36c21;
+            --text-dark-blue: #1c2b5e;
+            --border-orange: #f36c21;
+            --border-gray: #e2e8f0;
+            --text-placeholder: #a0aec0;
+            --btn-disabled: #8d98ba;
+            --star-yellow: #f59e0b;
+        }
+
+        body {
+            background-color: #eef2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            direction: rtl;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            height: 100vh;
+            max-height: 880px;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow-y: auto;
+        }
+
+        @media (min-width: 480px) {
+            .app-container {
+                height: 92vh;
+                border-radius: 24px;
+                overflow: hidden;
+            }
+        }
+
+        .app-header {
+            background-color: var(--primary-orange);
+            color: #ffffff;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        .header-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            flex-grow: 1;
+            text-align: center;
+            margin-right: -10px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 1.25rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-user-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar-container {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            overflow: hidden;
+        }
+
+        .user-avatar {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .help-btn {
+            font-size: 1.35rem;
+        }
+
+        .app-content {
+            padding: 24px 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: block;
+            color: var(--text-dark-blue);
+            font-size: 1.15rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .input-with-qr {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 0 14px;
+            height: 52px;
+            width: 100%;
+        }
+
+        .primary-border {
+            border: 1.5px solid var(--border-orange);
+        }
+
+        .default-border {
+            border: 1.5px solid var(--border-gray);
+        }
+
+        .input-icon {
+            color: var(--text-dark-blue);
+            font-size: 1.2rem;
+            margin-left: 10px;
+        }
+
+        .custom-input {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 1.05rem;
+            color: var(--text-dark-blue);
+            font-weight: 600;
+            background: transparent;
+        }
+
+        .custom-input::placeholder {
+            color: var(--text-placeholder);
+            font-weight: 500;
+        }
+
+        .qr-btn {
+            width: 52px;
+            height: 52px;
+            border: 1.5px solid var(--border-gray);
+            border-radius: 12px;
+            background-color: #ffffff;
+            color: var(--primary-orange);
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .favorites-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: -10px;
+            margin-bottom: 24px;
+        }
+
+        .favorites-btn {
+            background: none;
+            border: none;
+            color: var(--text-dark-blue);
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .star-icon {
+            color: var(--star-yellow);
+            font-size: 1.05rem;
+        }
+
+        .amount-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .amount-field {
+            flex: 1;
+        }
+
+        .currency-selector {
+            width: 90px;
+            height: 52px;
+            border: 1.5px solid var(--border-gray);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background-color: #ffffff;
+            color: var(--text-dark-blue);
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .dropdown-icon {
+            font-size: 0.8rem;
+            color: var(--text-dark-blue);
+        }
+
+        .balance-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 28px;
+        }
+
+        .balance-toggle-btn {
+            background: none;
+            border: none;
+            color: var(--primary-orange);
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .balance-text {
+            color: var(--text-dark-blue);
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .textarea-wrapper {
+            position: relative;
+            border: 1.5px solid var(--border-gray);
+            border-radius: 12px;
+            padding: 12px 14px 28px 14px;
+            background-color: #ffffff;
+        }
+
+        .custom-textarea {
+            width: 100%;
+            height: 70px;
+            border: none;
+            outline: none;
+            resize: none;
+            font-size: 1rem;
+            color: var(--text-dark-blue);
+            font-weight: 500;
+        }
+
+        .custom-textarea::placeholder {
+            color: var(--text-placeholder);
+        }
+
+        .char-counter {
+            position: absolute;
+            bottom: 8px;
+            right: 14px;
+            font-size: 0.85rem;
+            color: var(--text-dark-blue);
+            font-weight: 600;
+        }
+
+        .submit-container {
+            margin-top: auto;
+            padding-top: 20px;
+            padding-bottom: 10px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            height: 50px;
+            background-color: var(--btn-disabled);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-submit:hover {
+            background-color: #7b87a8;
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="app">
-
-    <!-- =========================================
-         HEADER
-         ========================================= -->
-
-    <header class="header">
-
-        <button
-            class="header-help"
-            type="button"
-            aria-label="مساعدة"
-            onclick="showToast('المساعدة')">
-            ?
-        </button>
-
-        <div class="header-avatar" aria-hidden="true"></div>
-
-        <div class="header-title">
-            دفع مشتريات وخدمات
-        </div>
-
-        <button
-            class="header-back"
-            type="button"
-            aria-label="رجوع"
-            onclick="history.back()">
-
-            <svg viewBox="0 0 32 32">
-                <path d="M6 16h20"></path>
-                <path d="M18 7l9 9-9 9"></path>
-            </svg>
-
-        </button>
-
-    </header>
-
-
-    <!-- =========================================
-         CONTENT
-         ========================================= -->
-
-    <main class="content">
-
-        <!-- PAYMENT POINT -->
-
-        <div class="title payment-title">
-            أدخل رقم نقطة الدفع
-        </div>
-
-
-        <div class="payment-row">
-
-            <!-- QR -->
-
-            <button
-                class="qr-button"
-                id="qrButton"
-                type="button"
-                aria-label="مسح QR">
-
-                <svg viewBox="0 0 32 32">
-
-                    <path d="M4 13V6h7"></path>
-                    <path d="M28 13V6h-7"></path>
-                    <path d="M4 19v7h7"></path>
-                    <path d="M28 19v7h-7"></path>
-
-                    <path d="M9 10h4v4H9z"></path>
-                    <path d="M19 10h4v4h-4z"></path>
-                    <path d="M9 19h4v4H9z"></path>
-                    <path d="M19 19h4v4h-4z"></path>
-
-                </svg>
-
+    <div class="app-container">
+        <!-- شريط العنوان العلوي -->
+        <header class="app-header">
+            <button class="icon-btn back-btn" aria-label="رجوع">
+                <i class="fa-solid fa-arrow-right"></i>
             </button>
-
-
-            <!-- PAYMENT INPUT -->
-
-            <div class="input-wrapper">
-
-                <span class="person-icon">
-
-                    <svg viewBox="0 0 40 40">
-
-                        <circle
-                            cx="20"
-                            cy="12"
-                            r="8">
-                        </circle>
-
-                        <path
-                            d="M7 32c1-8 7-12 13-12s12 4 13 12z">
-                        </path>
-
-                    </svg>
-
-                </span>
-
-                <input
-                    id="paymentPoint"
-                    class="payment-input"
-                    type="text"
-                    inputmode="numeric"
-                    autocomplete="off"
-                    maxlength="6"
-                    aria-label="رقم نقطة الدفع">
-
+            <h1 class="header-title">دفع مشتريات وخدمات</h1>
+            <div class="header-user-section">
+                <div class="avatar-container">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80" alt="صورة المستخدم" class="user-avatar">
+                </div>
+                <button class="icon-btn help-btn" aria-label="مساعدة">
+                    <i class="fa-regular fa-circle-question"></i>
+                </button>
             </div>
-
-        </div>
-
-
-        <!-- FAVORITE -->
-
-        <button
-            id="favorite"
-            class="favorite"
-            type="button">
-
-            <span>
-                اختر من المفضلة
-            </span>
-
-            <svg viewBox="0 0 24 24">
-
-                <path
-                    d="M12 2.5
-                       l2.9 5.9
-                       6.6 1
-                       -4.8 4.7
-                       1.1 6.6
-                       -5.8-3.1
-                       -5.8 3.1
-                       1.1-6.6
-                       -4.8-4.7
-                       6.6-1z">
-                </path>
-
-            </svg>
-
-        </button>
-
-
-        <div
-            id="paymentError"
-            class="error">
-        </div>
-
-
-        <!-- AMOUNT -->
-
-        <div class="title amount-title">
-            مبلغ العملية
-        </div>
-
-
-        <div class="amount-row">
-
-            <!-- CURRENCY -->
-
-            <button
-                id="currency"
-                class="currency"
-                type="button">
-
-                <svg viewBox="0 0 24 24">
-
-                    <path d="m6 9 6 7 6-7"></path>
-
-                </svg>
-
-                <span>
-                    ر.ي
-                </span>
-
-            </button>
-
-
-            <!-- AMOUNT INPUT -->
-
-            <div class="amount-wrapper">
-
-                <input
-                    id="amount"
-                    class="amount-input"
-                    type="text"
-                    inputmode="numeric"
-                    autocomplete="off"
-                    placeholder="أدخل المبلغ"
-                    aria-label="مبلغ العملية">
-
-            </div>
-
-        </div>
-
-
-        <!-- AMOUNT WORDS -->
-
-        <div
-            id="amountWords"
-            class="amount-words">
-        </div>
-
-
-        <!-- BALANCE -->
-
-        <div class="balance">
-
-            <span class="balance-icon">
-
-                <svg viewBox="0 0 32 32">
-
-                    <circle
-                        cx="16"
-                        cy="16"
-                        r="14">
-                    </circle>
-
-                    <path
-                        d="M8 17.5
-                           c3.8-5.2
-                           9.7-7.2
-                           16-4.8">
-                    </path>
-
-                    <path
-                        d="M10 21.5
-                           c4.3-3.6
-                           8.5-4.6
-                           12.5-3.2">
-                    </path>
-
-                </svg>
-
-            </span>
-
-            <span>
-                رصيدي
-            </span>
-
-            <strong>
-                ******* ر.ي
-            </strong>
-
-        </div>
-
-
-        <!-- NOTE -->
-
-        <div class="title note-title">
-            ملاحظة (اختياري)
-        </div>
-
-
-        <div class="note-wrapper">
-
-            <textarea
-                id="note"
-                class="note"
-                maxlength="30"
-                placeholder="أضف ملاحظة هنا..."
-                aria-label="ملاحظة"></textarea>
-
-            <span
-                id="counter"
-                class="counter">
-                0/30
-            </span>
-
-        </div>
-
-
-        <!-- NEXT -->
-
-        <button
-            id="next"
-            class="next"
-            type="button"
-            disabled>
-
-            التالي
-
-        </button>
-
-    </main>
-
-</div>
-
-
-<!-- TOAST -->
-
-<div
-    id="toast"
-    class="toast">
-</div>
-
-
-<script>
-
-/* =========================================================
-   ONE CASH JAVASCRIPT
-   ========================================================= */
-
-const paymentPoint =
-    document.getElementById("paymentPoint");
-
-const amount =
-    document.getElementById("amount");
-
-const amountWords =
-    document.getElementById("amountWords");
-
-const note =
-    document.getElementById("note");
-
-const counter =
-    document.getElementById("counter");
-
-const next =
-    document.getElementById("next");
-
-const paymentError =
-    document.getElementById("paymentError");
-
-const qrButton =
-    document.getElementById("qrButton");
-
-const favorite =
-    document.getElementById("favorite");
-
-const currency =
-    document.getElementById("currency");
-
-const toast =
-    document.getElementById("toast");
-
-
-/* =========================================================
-   TOAST
-   ========================================================= */
-
-let toastTimer;
-
-function showToast(message){
-
-    toast.textContent = message;
-
-    toast.classList.add("show");
-
-    clearTimeout(toastTimer);
-
-    toastTimer = setTimeout(() => {
-
-        toast.classList.remove("show");
-
-    },1700);
-}
-
-
-/* =========================================================
-   NUMBERS
-   ========================================================= */
-
-function onlyNumbers(value){
-
-    return value.replace(/[^\d]/g,"");
-
-}
-
-
-function formatMoney(value){
-
-    const clean =
-        onlyNumbers(value);
-
-    if(!clean){
-        return "";
-    }
-
-    return clean.replace(
-        /\B(?=(\d{3})+(?!\d))/g,
-        ","
-    );
-
-}
-
-
-/* =========================================================
-   PAYMENT POINT
-   ========================================================= */
-
-paymentPoint.addEventListener(
-    "input",
-    function(){
-
-        let value =
-            onlyNumbers(this.value);
-
-        value =
-            value.substring(0,6);
-
-        this.value = value;
-
-        if(value.length > 0){
-
-            this.classList.add("filled");
-
-        }else{
-
-            this.classList.remove("filled");
-
-        }
-
-        validate();
-
-    }
-);
-
-
-/* =========================================================
-   PAYMENT POINT BLUR
-   ========================================================= */
-
-paymentPoint.addEventListener(
-    "blur",
-    function(){
-
-        const value =
-            onlyNumbers(this.value);
-
-        if(value.length === 0){
-
-            paymentError.textContent = "";
-
-        }
-
-        else if(value.length !== 6){
-
-            paymentError.textContent =
-                "رقم نقطة الدفع يجب أن يتكون من 6 أرقام";
-
-        }
-
-        else{
-
-            paymentError.textContent = "";
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   QR BUTTON
-   ========================================================= */
-
-qrButton.addEventListener(
-    "click",
-    function(){
-
-        /*
-         * القيمة الموجودة في الصورة المرجعية الثانية
-         */
-
-        paymentPoint.value =
-            "826268";
-
-        paymentPoint.classList.add("filled");
-
-        paymentError.textContent = "";
-
-        validate();
-
-        paymentPoint.focus();
-
-    }
-);
-
-
-/* =========================================================
-   AMOUNT
-   ========================================================= */
-
-amount.addEventListener(
-    "input",
-    function(){
-
-        this.value =
-            formatMoney(this.value);
-
-        updateAmountWords();
-
-        validate();
-
-    }
-);
-
-
-/* =========================================================
-   AMOUNT WORDS
-   ========================================================= */
-
-function updateAmountWords(){
-
-    const number =
-        Number(
-            onlyNumbers(amount.value)
-        );
-
-    if(!number){
-
-        amountWords.textContent = "";
-
-        return;
-    }
-
-
-    if(number === 1000){
-
-        amountWords.textContent =
-            "ألف ر.ي";
-
-        return;
-
-    }
-
-
-    if(number === 2000){
-
-        amountWords.textContent =
-            "ألفان ر.ي";
-
-        return;
-
-    }
-
-
-    if(number === 3000){
-
-        amountWords.textContent =
-            "ثلاثة ألف ر.ي";
-
-        return;
-
-    }
-
-
-    if(number === 4000){
-
-        amountWords.textContent =
-            "أربعة ألف ر.ي";
-
-        return;
-
-    }
-
-
-    if(number === 5000){
-
-        amountWords.textContent =
-            "خمسة ألف ر.ي";
-
-        return;
-
-    }
-
-
-    if(number === 10000){
-
-        amountWords.textContent =
-            "عشرة ألف ر.ي";
-
-        return;
-
-    }
-
-
-    amountWords.textContent = "";
-
-}
-
-
-/* =========================================================
-   NOTE COUNTER
-   ========================================================= */
-
-note.addEventListener(
-    "input",
-    function(){
-
-        counter.textContent =
-            this.value.length + "/30";
-
-    }
-);
-
-
-/* =========================================================
-   VALIDATION
-   ========================================================= */
-
-function validate(){
-
-    const point =
-        onlyNumbers(
-            paymentPoint.value
-        );
-
-    const money =
-        Number(
-            onlyNumbers(
-                amount.value
-            )
-        );
-
-
-    const validPoint =
-        point.length === 6;
-
-    const validAmount =
-        money > 0;
-
-
-    if(validPoint && validAmount){
-
-        next.disabled = false;
-
-        next.classList.add("enabled");
-
-    }else{
-
-        next.disabled = true;
-
-        next.classList.remove("enabled");
-
-    }
-
-}
-
-
-/* =========================================================
-   FAVORITE
-   ========================================================= */
-
-favorite.addEventListener(
-    "click",
-    function(){
-
-        this.classList.toggle("active");
-
-        if(this.classList.contains("active")){
-
-            showToast(
-                "تمت الإضافة إلى المفضلة"
-            );
-
-        }else{
-
-            showToast(
-                "تم إلغاء المفضلة"
-            );
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   CURRENCY
-   ========================================================= */
-
-currency.addEventListener(
-    "click",
-    function(){
-
-        showToast(
-            "العملة الحالية: ريال يمني"
-        );
-
-    }
-);
-
-
-/* =========================================================
-   NEXT
-   ========================================================= */
-
-next.addEventListener(
-    "click",
-    function(){
-
-        if(this.disabled){
-
-            return;
-
-        }
-
-        showToast(
-            "تم التحقق من البيانات"
-        );
-
-    }
-);
-
-
-/* =========================================================
-   INITIAL STATE
-   ========================================================= */
-
-validate();
-
-</script>
-
+        </header>
+
+        <!-- محتوى الصفحة الرئيسي -->
+        <main class="app-content">
+            <form id="paymentForm" onsubmit="event.preventDefault();">
+                
+                <!-- قسم رقم نقطة الدفع -->
+                <div class="form-group">
+                    <label class="input-label" for="pointNumber">أدخل رقم نقطة الدفع</label>
+                    <div class="input-with-qr">
+                        <div class="input-wrapper primary-border">
+                            <i class="fa-solid fa-user input-icon"></i>
+                            <input type="text" id="pointNumber" class="custom-input" placeholder="" required>
+                        </div>
+                        <button type="button" class="qr-btn" aria-label="مسح QR">
+                            <i class="fa-solid fa-qrcode"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- زر المفضلة -->
+                <div class="favorites-container">
+                    <button type="button" class="favorites-btn">
+                        <i class="fa-solid fa-star star-icon"></i>
+                        <span>اختر من المفضلة</span>
+                    </button>
+                </div>
+
+                <!-- قسم مبلغ العملية -->
+                <div class="form-group">
+                    <label class="input-label" for="amount">مبلغ العملية</label>
+                    <div class="amount-input-group">
+                        <div class="input-wrapper default-border amount-field">
+                            <input type="number" id="amount" class="custom-input" placeholder="أدخل المبلغ" required>
+                        </div>
+                        <div class="currency-selector">
+                            <span class="currency-text">ر.ي</span>
+                            <i class="fa-solid fa-chevron-down dropdown-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- قسم الرصيد -->
+                <div class="balance-container">
+                    <button type="button" id="toggleBalanceBtn" class="balance-toggle-btn" aria-label="إظهار/إخفاء الرصيد">
+                        <i class="fa-solid fa-eye-slash balance-icon" id="balanceIcon"></i>
+                    </button>
+                    <span class="balance-text">رصيدي <strong id="balanceValue">******</strong> ر.ي</span>
+                </div>
+
+                <!-- قسم الملاحظة -->
+                <div class="form-group">
+                    <label class="input-label" for="note">ملاحظة (اختياري)</label>
+                    <div class="textarea-wrapper">
+                        <textarea id="note" class="custom-textarea" maxlength="30" placeholder="أضف ملاحظة هنا..."></textarea>
+                        <span class="char-counter" id="charCounter">0/30</span>
+                    </div>
+                </div>
+
+                <!-- زر التالي -->
+                <div class="submit-container">
+                    <button type="submit" class="btn-submit" id="submitBtn">التالي</button>
+                </div>
+
+            </form>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const noteTextarea = document.getElementById('note');
+            const charCounter = document.getElementById('charCounter');
+            const toggleBalanceBtn = document.getElementById('toggleBalanceBtn');
+            const balanceValue = document.getElementById('balanceValue');
+            const balanceIcon = document.getElementById('balanceIcon');
+            const paymentForm = document.getElementById('paymentForm');
+
+            let isBalanceVisible = false;
+            const actualBalance = "50,000";
+
+            if (noteTextarea && charCounter) {
+                noteTextarea.addEventListener('input', (e) => {
+                    const currentLength = e.target.value.length;
+                    charCounter.textContent = `${currentLength}/30`;
+                });
+            }
+
+            if (toggleBalanceBtn && balanceValue && balanceIcon) {
+                toggleBalanceBtn.addEventListener('click', () => {
+                    isBalanceVisible = !isBalanceVisible;
+                    if (isBalanceVisible) {
+                        balanceValue.textContent = actualBalance;
+                        balanceIcon.classList.remove('fa-eye-slash');
+                        balanceIcon.classList.add('fa-eye');
+                    } else {
+                        balanceValue.textContent = '******';
+                        balanceIcon.classList.remove('fa-eye-slash');
+                        balanceIcon.classList.add('fa-eye-slash');
+                    }
+                });
+            }
+
+            if (paymentForm) {
+                paymentForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const pointNumber = document.getElementById('pointNumber').value;
+                    const amount = document.getElementById('amount').value;
+                    const note = noteTextarea.value;
+
+                    if (!pointNumber || !amount) {
+                        alert('يرجى ملء جميع الحقول المطلوبة');
+                        return;
+                    }
+
+                    alert(`تم الحفظ بنجاح:\nرقم نقطة الدفع: ${pointNumber}\nالمبلغ: ${amount} ر.ي\nالملاحظة: ${note || 'لا يوجد'}`);
+                });
+            }
+        });
+    </script>
 </body>
 </html>
