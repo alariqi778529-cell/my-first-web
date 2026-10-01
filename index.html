@@ -1,721 +1,822 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>دفع مشتريات وخدمات</title>
-
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        :root {
-            --orange: #F36A20;
-            --dark-blue: #243B86;
-            --background: #F6F7FA;
-            --white: #FFFFFF;
-            --border: #E9EDF5;
-            --placeholder: #B6BCCD;
-            --button: #7F89B0;
-            --yellow: #FFC107;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>دفع مشتريات وخدمات</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    width:100%;
+    min-height:100%;
+}
+
+body{
+    background:#f7f7f7;
+    font-family:Tahoma, Arial, sans-serif;
+    color:#263e82;
+}
+
+/* =========================
+   التطبيق
+========================= */
 
-        body {
-            font-family:
-                "Tahoma",
-                "Arial",
-                sans-serif;
+.app{
+    width:100%;
+    min-height:100vh;
+    background:#f8f8f8;
+    overflow:hidden;
+    position:relative;
+}
 
-            background: var(--background);
-            color: var(--dark-blue);
-            min-height: 100vh;
-        }
+/* =========================
+   HEADER
+========================= */
 
-        /* =========================================
-           APP CONTAINER
-        ========================================= */
+.header{
+    width:100%;
+    height:161px;
+    background:#f86b1b;
+    position:relative;
+    color:white;
+}
 
-        .app {
-            width: 100%;
-            min-height: 100vh;
-            background: var(--background);
-            overflow-x: hidden;
-        }
+/* أيقونات أعلى الشاشة */
 
-        /* =========================================
-           HEADER
-        ========================================= */
+.status{
+    position:absolute;
+    top:27px;
+    left:45px;
+    right:43px;
 
-        .header {
-            height: 16vh;
-            min-height: 105px;
-            max-height: 135px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
 
-            background: var(--orange);
-            color: white;
+    color:white;
+    font-size:14px;
+    direction:ltr;
+    opacity:.95;
+}
 
-            position: relative;
+.status-left{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
 
-            display: flex;
-            align-items: center;
+.status-right{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
 
-            padding: 0 6%;
-        }
+/* محتوى الهيدر */
 
-        .header-content {
-            width: 100%;
+.header-content{
+    position:absolute;
 
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+    left:24px;
+    right:24px;
+    bottom:20px;
 
-            gap: 15px;
-        }
+    height:65px;
 
-        .header-title {
-            flex: 1;
+    display:flex;
+    align-items:center;
+}
 
-            text-align: center;
+/* زر الاستفهام */
 
-            font-size: clamp(19px, 5vw, 28px);
-            font-weight: 700;
+.help{
+    width:38px;
+    height:38px;
 
-            white-space: nowrap;
-        }
+    background:#fff;
+    color:#f86b1b;
 
-        .header-left,
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+    border-radius:50%;
+    border:none;
 
-        /* Help button */
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
-        .help-button {
-            width: 43px;
-            height: 43px;
+    font-size:27px;
+    font-weight:bold;
 
-            border-radius: 50%;
-            border: none;
+    position:absolute;
+    left:0;
 
-            background: white;
-            color: var(--orange);
+    cursor:pointer;
+}
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+/* السهم */
 
-            font-size: 25px;
-            font-weight: bold;
+.back{
+    position:absolute;
+    right:0;
 
-            cursor: pointer;
+    width:45px;
+    height:45px;
 
-            box-shadow: 0 2px 5px rgba(0,0,0,.08);
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
-            transition: .2s;
-        }
+    color:white;
+}
 
-        .help-button:hover {
-            transform: scale(1.05);
-        }
+.back::before{
+    content:"";
+    width:29px;
+    height:29px;
 
-        /* Avatar */
+    border-top:3px solid white;
+    border-right:3px solid white;
 
-        .avatar {
-            width: 48px;
-            height: 48px;
+    transform:rotate(45deg);
+}
 
-            border-radius: 50%;
+/* صورة المستخدم */
 
-            background:
-                linear-gradient(
-                    135deg,
-                    #79c9e8,
-                    #ffffff 48%,
-                    #4e9fc4
-                );
+.avatar{
+    position:absolute;
 
-            border: 2px solid rgba(255,255,255,.8);
+    left:67px;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+    width:53px;
+    height:53px;
 
-            color: white;
-            font-size: 21px;
-            font-weight: bold;
+    border-radius:50%;
 
-            overflow: hidden;
-        }
+    object-fit:cover;
 
-        .avatar::after {
-            content: "👤";
-            filter: grayscale(1);
-            opacity: .8;
-        }
+    border:2px solid rgba(255,255,255,.35);
 
-        /* =========================================
-           MAIN
-        ========================================= */
+    background:#ddd;
+}
 
-        .main {
-            width: 100%;
-            max-width: 700px;
+/* عنوان الهيدر */
 
-            margin: auto;
+.header-title{
+    position:absolute;
 
-            padding:
-                25px
-                8%
-                45px;
+    left:150px;
+    right:70px;
 
-            position: relative;
-        }
+    text-align:center;
 
-        /* =========================================
-           LABELS
-        ========================================= */
+    font-size:27px;
+    font-weight:700;
 
-        .section-label {
-            width: 100%;
+    white-space:nowrap;
+}
 
-            text-align: right;
+/* =========================
+   المحتوى
+========================= */
 
-            color: var(--dark-blue);
+.content{
+    width:100%;
 
-            font-size: clamp(15px, 4vw, 19px);
+    padding-top:47px;
+    padding-left:44px;
+    padding-right:44px;
 
-            font-weight: 700;
+    position:relative;
+}
 
-            margin-bottom: 10px;
-        }
+/* =========================
+   العناوين
+========================= */
 
-        /* =========================================
-           PAYMENT POINT
-        ========================================= */
+.label{
+    color:#263e82;
 
-        .payment-point {
-            margin-bottom: 7px;
-        }
+    font-size:29px;
+    font-weight:700;
 
-        .payment-input-wrapper {
-            height: 58px;
+    text-align:right;
 
-            background: white;
+    line-height:1.4;
 
-            border: 1.5px solid #F48A2F;
+    margin-bottom:26px;
+}
 
-            border-radius: 12px;
+/* =========================
+   رقم نقطة الدفع
+========================= */
 
-            display: flex;
-            align-items: center;
+.payment-area{
+    width:100%;
 
-            padding: 5px 10px;
+    position:relative;
 
-            direction: ltr;
+    margin-bottom:31px;
+}
 
-            transition: .2s;
-        }
+.payment-row{
+    width:100%;
 
-        .payment-input-wrapper:focus-within {
-            box-shadow:
-                0 0 0 3px rgba(243,106,32,.12);
-        }
+    display:flex;
+    direction:ltr;
 
-        /* QR */
+    align-items:center;
 
-        .qr-button {
-            width: 45px;
-            height: 45px;
+    gap:14px;
+}
 
-            flex-shrink: 0;
+/* QR */
 
-            background: white;
+.qr{
+    width:88px;
+    height:94px;
 
-            border: 1px solid var(--border);
+    flex-shrink:0;
 
-            border-radius: 9px;
+    background:#fff;
 
-            color: var(--orange);
+    border:2px solid #d9dde5;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+    border-radius:15px;
 
-            cursor: pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
-            font-size: 26px;
-        }
+    color:#ef6b2a;
 
-        /* Payment input */
+    cursor:pointer;
+}
 
-        .payment-input {
-            width: 100%;
+.qr svg{
+    width:39px;
+    height:39px;
+}
 
-            height: 100%;
+/* حقل نقطة الدفع */
 
-            border: none;
-            outline: none;
+.payment-box{
+    height:94px;
 
-            background: transparent;
+    flex:1;
 
-            padding: 0 12px;
+    background:#fff;
 
-            font-size: 17px;
+    border:2px solid #e77a35;
 
-            color: var(--dark-blue);
+    border-radius:15px;
 
-            text-align: right;
-        }
+    display:flex;
+    align-items:center;
 
-        .payment-input::placeholder {
-            color: var(--placeholder);
-        }
+    padding:0 17px;
 
-        /* User icon */
+    direction:ltr;
+}
 
-        .person-icon {
-            width: 36px;
-            height: 36px;
+/* المستخدم */
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+.user-icon{
+    width:48px;
+    height:48px;
 
-            color: var(--dark-blue);
+    flex-shrink:0;
 
-            font-size: 22px;
-        }
+    color:#263e82;
 
-        /* =========================================
-           FAVORITES
-        ========================================= */
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
 
-        .favorite {
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
+.user-icon svg{
+    width:47px;
+    height:47px;
+}
 
-            gap: 5px;
+/* input */
 
-            margin-top: 7px;
+.payment-input{
+    flex:1;
 
-            font-size: 14px;
+    height:100%;
 
-            cursor: pointer;
+    border:none;
+    outline:none;
 
-            color: var(--dark-blue);
+    background:transparent;
 
-            user-select: none;
-        }
+    font-size:25px;
 
-        .favorite-star {
-            color: var(--yellow);
+    color:#263e82;
 
-            font-size: 22px;
+    text-align:right;
 
-            line-height: 1;
-        }
+    padding-right:8px;
+}
 
-        .favorite:hover {
-            text-decoration: underline;
-        }
+.payment-input:focus{
+    border:none;
+    outline:none;
+}
 
-        /* =========================================
-           AMOUNT
-        ========================================= */
+/* المؤشر البرتقالي */
 
-        .amount-section {
-            margin-top: 24px;
-        }
+.payment-input:focus{
+    caret-color:#e77a35;
+}
 
-        .amount-row {
-            display: flex;
+/* =========================
+   المفضلة
+========================= */
 
-            gap: 10px;
+.favorite{
+    margin-top:29px;
 
-            width: 100%;
+    display:flex;
 
-            direction: ltr;
-        }
+    align-items:center;
 
-        .currency {
-            width: 25%;
+    justify-content:flex-start;
 
-            height: 56px;
+    gap:8px;
 
-            background: white;
+    color:#263e82;
 
-            border: 1px solid var(--border);
+    font-size:24px;
 
-            border-radius: 11px;
+    font-weight:bold;
 
-            color: var(--dark-blue);
+    text-decoration:underline;
 
-            font-size: 16px;
+    cursor:pointer;
+}
 
-            font-weight: 600;
+.star{
+    color:#ffbf00;
 
-            padding: 0 13px;
+    font-size:36px;
 
-            outline: none;
+    line-height:1;
 
-            cursor: pointer;
-        }
+    text-decoration:none;
+}
 
-        .currency:focus {
-            border-color: var(--orange);
-        }
+/* =========================
+   مبلغ العملية
+========================= */
 
-        .amount-input {
-            width: 75%;
+.amount-section{
+    margin-top:52px;
+}
 
-            height: 56px;
+.amount-section .label{
+    margin-bottom:36px;
+}
 
-            border: 1px solid var(--border);
+/* صف المبلغ */
 
-            border-radius: 11px;
+.amount-row{
+    display:flex;
 
-            background: white;
+    direction:ltr;
 
-            outline: none;
+    gap:14px;
 
-            padding: 0 16px;
+    width:100%;
+}
 
-            color: var(--dark-blue);
+/* العملة */
 
-            font-size: 18px;
+.currency{
+    width:164px;
+    height:106px;
 
-            text-align: right;
-        }
+    background:#fff;
 
-        .amount-input:focus {
-            border-color: var(--orange);
-            box-shadow:
-                0 0 0 3px rgba(243,106,32,.08);
-        }
+    border:2px solid #d9dde5;
 
-        .amount-input::placeholder {
-            color: var(--placeholder);
-        }
+    border-radius:15px;
 
-        /* =========================================
-           BALANCE
-        ========================================= */
+    color:#263e82;
 
-        .balance {
-            margin-top: 16px;
+    font-family:Tahoma,Arial,sans-serif;
 
-            display: flex;
+    font-size:23px;
+    font-weight:bold;
 
-            align-items: center;
+    text-align:center;
 
-            justify-content: flex-start;
+    outline:none;
 
-            gap: 9px;
+    appearance:auto;
 
-            color: var(--dark-blue);
+    direction:rtl;
 
-            font-size: 15px;
+    cursor:pointer;
+}
 
-            direction: rtl;
-        }
+/* المبلغ */
 
-        .balance-value {
-            font-weight: 600;
-            letter-spacing: 2px;
-        }
+.amount-input{
+    flex:1;
 
-        .eye-button {
-            width: 30px;
-            height: 30px;
+    height:106px;
 
-            border: none;
+    background:#fff;
 
-            border-radius: 50%;
+    border:2px solid #d9dde5;
 
-            background: var(--orange);
+    border-radius:15px;
 
-            color: white;
+    outline:none;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+    color:#263e82;
 
-            cursor: pointer;
+    font-family:Tahoma,Arial,sans-serif;
 
-            font-size: 15px;
-        }
+    font-size:27px;
 
-        /* =========================================
-           NOTE
-        ========================================= */
+    padding:0 22px;
 
-        .note-section {
-            margin-top: 23px;
-        }
+    text-align:right;
+}
 
-        .note-box {
-            width: 100%;
+.amount-input::placeholder{
+    color:#8995b8;
+    opacity:1;
+}
 
-            min-height: 90px;
+.amount-input:focus{
+    border-color:#d9dde5;
+}
 
-            background: white;
+/* =========================
+   الرصيد
+========================= */
 
-            border: 1px solid var(--border);
+.balance{
+    margin-top:34px;
 
-            border-radius: 12px;
+    display:flex;
 
-            padding: 14px 16px;
+    align-items:center;
 
-            outline: none;
+    justify-content:flex-start;
 
-            resize: vertical;
+    gap:5px;
 
-            font-family: inherit;
+    color:#263e82;
 
-            color: var(--dark-blue);
+    font-size:23px;
 
-            font-size: 15px;
+    font-weight:bold;
+}
 
-            text-align: right;
-        }
+.balance-text{
+    direction:rtl;
+}
 
-        .note-box:focus {
-            border-color: var(--orange);
+.eye{
+    width:42px;
+    height:42px;
 
-            box-shadow:
-                0 0 0 3px rgba(243,106,32,.08);
-        }
+    border-radius:50%;
 
-        .note-box::placeholder {
-            color: var(--placeholder);
-        }
+    border:2px solid #263e82;
 
-        /* =========================================
-           NEXT BUTTON
-        ========================================= */
+    background:#fff;
 
-        .next-button {
-            width: 90%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
-            height: 58px;
+    cursor:pointer;
 
-            margin:
-                55px
-                auto
-                0;
+    margin-right:2px;
 
-            display: block;
+    position:relative;
+}
 
-            border: none;
+.eye::before{
+    content:"";
 
-            border-radius: 14px;
+    width:27px;
+    height:20px;
 
-            background: var(--button);
+    border:4px solid #263e82;
 
-            color: white;
+    border-radius:50%;
 
-            font-family: inherit;
+    position:absolute;
+}
 
-            font-size: 18px;
+.eye::after{
+    content:"";
 
-            font-weight: bold;
+    width:8px;
+    height:8px;
 
-            cursor: pointer;
+    background:#f86b1b;
 
-            transition:
-                transform .15s,
-                background .2s,
-                box-shadow .2s;
-        }
+    border-radius:50%;
 
-        .next-button:hover {
-            background: #707ba5;
+    position:absolute;
+}
 
-            box-shadow:
-                0 5px 15px rgba(36,59,134,.16);
-        }
+/* =========================
+   الملاحظة
+========================= */
 
-        .next-button:active {
-            transform: scale(.98);
-        }
+.note-section{
+    margin-top:43px;
+}
 
-        /* =========================================
-           DESKTOP
-        ========================================= */
+.note-label{
+    color:#263e82;
 
-        @media (min-width: 768px) {
+    font-size:24px;
 
-            body {
-                display: flex;
-                justify-content: center;
-                align-items: center;
+    font-weight:bold;
 
-                padding: 20px;
-            }
+    text-align:right;
 
-            .app {
-                max-width: 480px;
+    margin-bottom:33px;
+}
 
-                min-height: 850px;
+.note-box{
+    width:100%;
 
-                border-radius: 20px;
+    height:122px;
 
-                overflow: hidden;
+    resize:none;
 
-                box-shadow:
-                    0 10px 45px rgba(0,0,0,.12);
-            }
+    background:#fff;
 
-            .header {
-                height: 115px;
-            }
+    border:2px solid #d9dde5;
 
-            .main {
-                padding:
-                    28px
-                    35px
-                    45px;
-            }
+    border-radius:15px;
 
-            .next-button {
-                width: 88%;
-            }
-        }
+    outline:none;
 
-        /* =========================================
-           SMALL MOBILE
-        ========================================= */
+    padding:25px 20px;
 
-        @media (max-width: 360px) {
+    color:#263e82;
 
-            .header {
-                padding: 0 4%;
-            }
+    font-family:Tahoma,Arial,sans-serif;
 
-            .header-title {
-                font-size: 17px;
-            }
+    font-size:23px;
 
-            .help-button {
-                width: 38px;
-                height: 38px;
-            }
+    text-align:right;
+}
 
-            .avatar {
-                width: 42px;
-                height: 42px;
-            }
+.note-box::placeholder{
+    color:#8995b8;
+    opacity:1;
+}
 
-            .main {
-                padding-left: 5%;
-                padding-right: 5%;
-            }
+.counter{
+    position:absolute;
 
-            .payment-input-wrapper {
-                height: 53px;
-            }
+    left:69px;
 
-            .qr-button {
-                width: 40px;
-                height: 40px;
-            }
+    margin-top:-44px;
 
-            .currency {
-                font-size: 14px;
-                padding: 0 8px;
-            }
+    color:#64739e;
 
-            .next-button {
-                width: 92%;
-            }
-        }
+    font-size:19px;
 
-        /* =========================================
-           TOAST MESSAGE
-        ========================================= */
+    font-weight:bold;
 
-        .toast {
-            position: fixed;
+    direction:ltr;
+}
 
-            bottom: 25px;
-            left: 50%;
+/* =========================
+   زر التالي
+========================= */
 
-            transform:
-                translate(-50%, 100px);
+.next{
+    width:calc(100% - 130px);
 
-            background: #243B86;
+    height:108px;
 
-            color: white;
+    margin:295px auto 42px;
 
-            padding:
-                12px
-                22px;
+    display:block;
 
-            border-radius: 30px;
+    border:none;
 
-            font-size: 14px;
+    border-radius:18px;
 
-            opacity: 0;
+    background:#8c9ac4;
 
-            pointer-events: none;
+    color:white;
 
-            transition: .3s;
+    font-family:Tahoma,Arial,sans-serif;
 
-            z-index: 100;
-        }
+    font-size:30px;
 
-        .toast.show {
-            opacity: 1;
+    font-weight:bold;
 
-            transform:
-                translate(-50%, 0);
-        }
-    </style>
+    cursor:pointer;
+
+    transition:.15s;
+}
+
+.next:active{
+    transform:scale(.98);
+    background:#7e8db8;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:600px){
+
+    .header{
+        height:161px;
+    }
+
+    .status{
+        top:27px;
+        left:45px;
+        right:43px;
+    }
+
+    .header-content{
+        left:24px;
+        right:24px;
+        bottom:20px;
+    }
+
+    .header-title{
+        font-size:27px;
+    }
+
+    .content{
+        padding-left:44px;
+        padding-right:44px;
+    }
+
+}
+
+/* الشاشات الصغيرة */
+
+@media(max-width:450px){
+
+    .header-title{
+        font-size:21px;
+
+        left:135px;
+        right:52px;
+    }
+
+    .avatar{
+        left:64px;
+        width:50px;
+        height:50px;
+    }
+
+    .content{
+        padding-left:22px;
+        padding-right:22px;
+    }
+
+    .label{
+        font-size:25px;
+    }
+
+    .qr{
+        width:88px;
+        height:94px;
+    }
+
+    .payment-box{
+        height:94px;
+    }
+
+    .favorite{
+        font-size:21px;
+    }
+
+    .star{
+        font-size:32px;
+    }
+
+    .amount-section{
+        margin-top:48px;
+    }
+
+    .currency{
+        width:82px;
+        height:90px;
+        font-size:18px;
+    }
+
+    .amount-input{
+        height:90px;
+        font-size:22px;
+    }
+
+    .balance{
+        font-size:19px;
+    }
+
+    .note-label{
+        font-size:21px;
+    }
+
+    .note-box{
+        height:120px;
+        font-size:20px;
+    }
+
+    .next{
+        width:76%;
+        height:108px;
+
+        margin-top:270px;
+
+        font-size:28px;
+    }
+
+}
+
+</style>
 </head>
 
 <body>
 
 <div class="app">
 
-    <!-- ======================================
+    <!-- =========================
          HEADER
-    ======================================= -->
+    ========================== -->
 
     <header class="header">
 
-        <div class="header-content">
+        <!-- شريط الحالة -->
+        <div class="status">
 
-            <div class="header-left">
-
-                <button
-                    class="help-button"
-                    onclick="showHelp()"
-                    aria-label="مساعدة">
-                    ?
-                </button>
-
-                <div
-                    class="avatar"
-                    title="الحساب">
-                </div>
-
+            <div class="status-left">
+                <span>▰</span>
+                <span>٪١٣</span>
+                <span>▥</span>
+                <span>4G</span>
+                <span>▣</span>
+                <span>◷</span>
             </div>
 
+            <div class="status-right">
+                <span>▧</span>
+                <span>٣</span>
+                <span>◉</span>
+                <span>◌</span>
+                <span>٨٠:٤٠</span>
+            </div>
 
+        </div>
+
+
+        <div class="header-content">
+
+            <!-- مساعدة -->
+            <button
+                class="help"
+                onclick="showMessage('مساعدة')">
+                ?
+            </button>
+
+
+            <!-- صورة المستخدم -->
+            <img
+                class="avatar"
+                src="avatar.png"
+                alt="Profile">
+
+
+            <!-- العنوان -->
             <div class="header-title">
                 دفع مشتريات وخدمات
             </div>
 
 
-            <div class="header-right">
-                <!-- مساحة للحفاظ على توازن التصميم -->
+            <!-- السهم -->
+            <div
+                class="back"
+                onclick="history.back()">
             </div>
 
         </div>
@@ -723,31 +824,30 @@
     </header>
 
 
-    <!-- ======================================
-         MAIN CONTENT
-    ======================================= -->
+    <!-- =========================
+         CONTENT
+    ========================== -->
 
-    <main class="main">
+    <main class="content">
 
-        <!-- Payment Point -->
+        <!-- رقم نقطة الدفع -->
 
-        <section class="payment-point">
+        <section class="payment-area">
 
-            <div class="section-label">
+            <div class="label">
                 أدخل رقم نقطة الدفع
             </div>
 
 
-            <div class="payment-input-wrapper">
+            <div class="payment-row">
+
+                <!-- QR -->
 
                 <button
-                    class="qr-button"
-                    onclick="scanQR()"
-                    aria-label="مسح QR">
+                    class="qr"
+                    onclick="showMessage('فتح قارئ QR')">
 
                     <svg
-                        width="25"
-                        height="25"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
@@ -757,19 +857,22 @@
                             x="3"
                             y="3"
                             width="7"
-                            height="7"/>
+                            height="7"
+                            rx="1"/>
 
                         <rect
                             x="14"
                             y="3"
                             width="7"
-                            height="7"/>
+                            height="7"
+                            rx="1"/>
 
                         <rect
                             x="3"
                             y="14"
                             width="7"
-                            height="7"/>
+                            height="7"
+                            rx="1"/>
 
                         <path d="M14 14h3v3h-3z"/>
                         <path d="M18 18h3v3h-3z"/>
@@ -781,51 +884,51 @@
                 </button>
 
 
-                <input
-                    id="paymentPoint"
-                    class="payment-input"
-                    type="text"
-                    inputmode="numeric"
-                    placeholder="أدخل رقم نقطة الدفع"
-                    autocomplete="off"
-                >
+                <!-- الحقل -->
+
+                <div class="payment-box">
+
+                    <div class="user-icon">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="currentColor">
+
+                            <circle
+                                cx="12"
+                                cy="7"
+                                r="4"/>
+
+                            <path
+                                d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z"/>
+
+                        </svg>
+
+                    </div>
 
 
-                <div class="person-icon">
-
-                    <svg
-                        width="23"
-                        height="23"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2">
-
-                        <circle
-                            cx="12"
-                            cy="8"
-                            r="4"/>
-
-                        <path
-                            d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>
-
-                    </svg>
+                    <input
+                        class="payment-input"
+                        id="payment"
+                        type="text"
+                        inputmode="numeric"
+                        autocomplete="off">
 
                 </div>
 
             </div>
 
 
+            <!-- المفضلة -->
+
             <div
                 class="favorite"
-                onclick="chooseFavorite()">
+                onclick="favoritePoint()">
 
-                <span class="favorite-star">
-                    ★
-                </span>
+                <span class="star">★</span>
 
                 <span>
-                    اختيار من المفضلة
+                    اختر من المفضلة
                 </span>
 
             </div>
@@ -833,120 +936,98 @@
         </section>
 
 
-        <!-- Amount -->
+        <!-- =========================
+             مبلغ العملية
+        ========================== -->
 
         <section class="amount-section">
 
-            <div class="section-label">
+            <div class="label">
                 مبلغ العملية
             </div>
 
 
             <div class="amount-row">
 
+                <!-- العملة -->
+
                 <select
-                    id="currency"
-                    class="currency">
+                    class="currency"
+                    id="currency">
 
-                    <option value="ريال">
-                        ريال
-                    </option>
-
-                    <option value="دولار">
-                        دولار
-                    </option>
-
-                    <option value="سعودي">
-                        ريال سعودي
-                    </option>
+                    <option>ريال</option>
+                    <option>دولار</option>
+                    <option>ريال سعودي</option>
 
                 </select>
 
 
+                <!-- المبلغ -->
+
                 <input
-                    id="amount"
                     class="amount-input"
+                    id="amount"
                     type="number"
                     inputmode="decimal"
-                    placeholder="أدخل المبلغ"
-                >
+                    placeholder="أدخل المبلغ">
 
             </div>
 
 
-            <!-- Balance -->
+            <!-- الرصيد -->
 
             <div class="balance">
 
-                <span>
-                    الرصيد المتاح:
-                </span>
+                <div class="eye"
+                     onclick="toggleBalance()">
+                </div>
 
-                <span
-                    id="balanceValue"
-                    class="balance-value">
-
-                    •••••••
-
-                </span>
-
-                <button
-                    id="eyeButton"
-                    class="eye-button"
-                    onclick="toggleBalance()"
-                    aria-label="إظهار الرصيد">
-
-                    <svg
-                        width="17"
-                        height="17"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2">
-
-                        <path
-                            d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/>
-
-                        <circle
-                            cx="12"
-                            cy="12"
-                            r="3"/>
-
-                    </svg>
-
-                </button>
+                <div class="balance-text">
+                    رصيدي
+                    <span id="balance">
+                        ****** ريال
+                    </span>
+                </div>
 
             </div>
 
         </section>
 
 
-        <!-- Note -->
+        <!-- =========================
+             الملاحظة
+        ========================== -->
 
         <section class="note-section">
 
-            <div class="section-label">
-                ملاحظة
-                <span style="font-weight:400;">
-                    (اختياري)
-                </span>
+            <div class="note-label">
+                ملاحظة (اختياري)
             </div>
 
 
             <textarea
                 id="note"
+                maxlength="30"
                 class="note-box"
-                placeholder="أضف ملاحظة هنا..."
-            ></textarea>
+                placeholder="أضف ملاحظة هنا..."></textarea>
+
+
+            <div
+                class="counter"
+                id="counter">
+                0/30
+            </div>
 
         </section>
 
 
-        <!-- Next -->
+        <!-- =========================
+             التالي
+        ========================== -->
 
         <button
-            class="next-button"
-            onclick="goNext()">
+            class="next"
+            onclick="nextStep()">
 
             التالي
 
@@ -957,198 +1038,130 @@
 </div>
 
 
-<!-- Toast -->
-
-<div
-    id="toast"
-    class="toast">
-</div>
-
-
 <script>
 
-    /* =========================================
-       TOAST
-    ========================================= */
+/* =========================
+   رسالة
+========================= */
 
-    function showToast(message) {
+function showMessage(text){
 
-        const toast =
-            document.getElementById("toast");
+    alert(text);
 
-        toast.textContent = message;
-
-        toast.classList.add("show");
-
-        setTimeout(() => {
-
-            toast.classList.remove("show");
-
-        }, 2500);
-    }
+}
 
 
-    /* =========================================
-       HELP
-    ========================================= */
+/* =========================
+   المفضلة
+========================= */
 
-    function showHelp() {
+function favoritePoint(){
 
-        showToast(
-            "أدخل رقم نقطة الدفع ثم أدخل مبلغ العملية"
-        );
-    }
+    document.getElementById("payment").value = "123456";
 
-
-    /* =========================================
-       QR
-    ========================================= */
-
-    function scanQR() {
-
-        showToast(
-            "ميزة مسح QR جاهزة للربط بالكاميرا"
-        );
-    }
+}
 
 
-    /* =========================================
-       FAVORITES
-    ========================================= */
+/* =========================
+   الرصيد
+========================= */
 
-    function chooseFavorite() {
+let visible = false;
 
-        const paymentPoint =
-            document.getElementById("paymentPoint");
+function toggleBalance(){
 
-        paymentPoint.value = "123456";
+    const balance =
+        document.getElementById("balance");
 
-        showToast(
-            "تم اختيار نقطة الدفع من المفضلة"
-        );
-    }
+    if(visible){
 
+        balance.textContent =
+            "****** ريال";
 
-    /* =========================================
-       BALANCE
-    ========================================= */
+        visible = false;
 
-    let balanceVisible = false;
+    }else{
 
+        balance.textContent =
+            "25,000 ريال";
 
-    function toggleBalance() {
-
-        const balance =
-            document.getElementById("balanceValue");
-
-        if (!balanceVisible) {
-
-            balance.textContent =
-                "25,000 ريال";
-
-            balanceVisible = true;
-
-        } else {
-
-            balance.textContent =
-                "•••••••";
-
-            balanceVisible = false;
-
-        }
-    }
-
-
-    /* =========================================
-       NEXT
-    ========================================= */
-
-    function goNext() {
-
-        const paymentPoint =
-            document.getElementById("paymentPoint").value.trim();
-
-        const amount =
-            document.getElementById("amount").value.trim();
-
-        const currency =
-            document.getElementById("currency").value;
-
-
-        if (paymentPoint === "") {
-
-            showToast(
-                "يرجى إدخال رقم نقطة الدفع"
-            );
-
-            document
-                .getElementById("paymentPoint")
-                .focus();
-
-            return;
-        }
-
-
-        if (amount === "") {
-
-            showToast(
-                "يرجى إدخال مبلغ العملية"
-            );
-
-            document
-                .getElementById("amount")
-                .focus();
-
-            return;
-        }
-
-
-        showToast(
-            "تم تجهيز العملية: " +
-            amount +
-            " " +
-            currency
-        );
+        visible = true;
 
     }
 
-
-    /* =========================================
-       NUMERIC PAYMENT POINT
-    ========================================= */
-
-    document
-        .getElementById("paymentPoint")
-        .addEventListener(
-            "input",
-            function () {
-
-                this.value =
-                    this.value.replace(
-                        /[^0-9]/g,
-                        ""
-                    );
-
-            }
-        );
+}
 
 
-    /* =========================================
-       AMOUNT VALIDATION
-    ========================================= */
+/* =========================
+   عداد الملاحظة
+========================= */
 
-    document
-        .getElementById("amount")
-        .addEventListener(
-            "input",
-            function () {
+const note =
+    document.getElementById("note");
 
-                if (this.value < 0) {
-                    this.value = 0;
-                }
+const counter =
+    document.getElementById("counter");
 
-            }
-        );
+
+note.addEventListener("input", function(){
+
+    counter.textContent =
+        this.value.length + "/30";
+
+});
+
+
+/* =========================
+   التالي
+========================= */
+
+function nextStep(){
+
+    const payment =
+        document.getElementById("payment").value.trim();
+
+    const amount =
+        document.getElementById("amount").value.trim();
+
+    if(payment === ""){
+
+        alert("أدخل رقم نقطة الدفع");
+
+        document
+            .getElementById("payment")
+            .focus();
+
+        return;
+    }
+
+    if(amount === ""){
+
+        alert("أدخل المبلغ");
+
+        document
+            .getElementById("amount")
+            .focus();
+
+        return;
+    }
+
+    alert("تم الانتقال إلى الخطوة التالية");
+
+}
+
+
+/* =========================
+   رقم نقطة الدفع
+========================= */
+
+document
+    .getElementById("payment")
+    .addEventListener("input", function(){
+
+        this.value =
+            this.value.replace(/[^0-9]/g,"");
+
+    });
 
 </script>
 
